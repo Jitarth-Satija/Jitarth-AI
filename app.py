@@ -15,20 +15,27 @@ api_key = st.secrets["GROQ_API_KEY"]
 client = Groq(api_key=api_key)
 cookie_manager = stx.CookieManager()
 
-# 2. Deep News Search Function
+# 2. Deep News Search Function (FIXED FOR BETTER SEARCH)
 def search_internet(query):
     try:
         with DDGS() as ddgs:
-            deep_query = f"{query} detailed news report 2025 2026"
-            results = [r for r in ddgs.news(deep_query, max_results=8)]
+            # 2026 ke context ke liye query refine ki
+            deep_query = f"{query} news 2025 2026"
+            
+            # Pehle News try karo
+            results = [r for r in ddgs.news(deep_query, max_results=5)]
+            
+            # Agar News khali hai, toh normal web search try karo
             if not results:
-                results = [r for r in ddgs.text(deep_query, max_results=8)]
+                results = [r for r in ddgs.text(deep_query, max_results=5)]
+            
             if results:
-                context = "\n".join([f"Source: {r['title']} - {r['body']}" for r in results])
+                context = "\n".join([f"Source: {r.get('title', 'No Title')} - {r.get('body', r.get('snippet', ''))}" for r in results])
                 return context
-            return "No live internet results found."
+            return "No live internet results found. Please answer based on your current knowledge of 2025/2026."
     except Exception as e:
-        return f"Internet access error: {str(e)}"
+        # Error aane par silent raho taaki AI "Internet Access Error" na chillaye
+        return "Search currently unavailable. Please provide the best answer from your training data."
 
 # 3. Database Initialization
 def init_db():
@@ -200,18 +207,9 @@ if st.session_state.logged_in_user is None:
                 user = get_user_data(u_login)
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
-                    
-                    # Smart Logic: Next Month's 1st Date
                     now = datetime.now()
-                    if now.month == 12:
-                        expiry = datetime(now.year + 1, 1, 1)
-                    else:
-                        expiry = datetime(now.year, now.month + 1, 1)
-                    
-                    # Cookie set and save
+                    expiry = datetime(now.year, now.month + 1, 1) if now.month < 12 else datetime(now.year + 1, 1, 1)
                     cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry)
-                    # We don't need a separate save() here as most managers auto-save on set, 
-                    # but we trigger a rerun to finalize
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password")
@@ -258,7 +256,7 @@ if st.session_state.logged_in_user is None:
                     else: 
                         st.error("Registration failed")
                 else: 
-                    st.error("Check requirements (User: 5, Pass: 4, Answer: 2)")
+                    st.error("Check requirements")
 
 else:
     current_user = st.session_state.logged_in_user
@@ -327,10 +325,6 @@ else:
                     st.write("")
                     np_raw_settings = st.text_input("New Password (4-10 characters)", value=user_record[1], type="password")
                     np_settings = validate_password(np_raw_settings)
-                    if len(np_settings) < 4: 
-                        st.markdown('<p class="validation-text" style="color:#ff4b4b;">Minimum 4 characters required</p>', unsafe_allow_html=True)
-                    else: 
-                        st.markdown(f'<p class="validation-text">{10 - len(np_settings)} characters left</p>', unsafe_allow_html=True)
                     
                     uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
                     ua = st.text_input("Security Answer (Min 2 characters)", value=user_record[4])
@@ -381,16 +375,35 @@ else:
             active_list.append({"role": "user", "content": p})
             with st.chat_message("user", avatar="👤"): 
                 st.markdown(p)
+            
             with st.chat_message("assistant", avatar="✨"):
-                with st.status("🔍 Scanning Live Data...", expanded=False): 
+                # 1. Search Logic
+                with st.status("🔍 Scanning Live 2026 Data...", expanded=False): 
                     internet_context = search_internet(p)
-                sys_prompt = f"Your name is Jitarth AI, invented by Jitarth Satija. You were born on 30th January 2026. You are a highly advanced AI, not a human, so you don't have a gender. If anyone asks, simply state that you are an AI and therefore have no gender. Current date: 2026. Use this context: {internet_context}"
-                response = client.chat.completions.create(
-                    messages=[{"role": "system", "content": sys_prompt}] + active_list, 
-                    model="llama-3.3-70b-versatile"
-                ).choices[0].message.content
-                st.markdown(response)
-                active_list.append({"role": "assistant", "content": response})
-                if not st.session_state.is_temp_mode: 
-                    save_user_chats(current_user, user_chats)
-                st.rerun()
+                
+                # 2. Strong System Prompt to avoid "Internet Error" excuses
+                sys_prompt = f"""Your name is ✨Jitarth AI, invented by Jitarth Satija. 
+                You were born on 30th January 2026. 
+                You are a highly advanced AI. You have no gender.
+                Current Date: January 2026.
+                
+                WEB SEARCH DATA (Use this for recent 2025-2026 events):
+                {internet_context}
+                
+                IMPORTANT: If the user asks about an attack or event from 2025, use the provided Web Search Data. 
+                If the search data mentions it, explain it in detail. 
+                DO NOT say you have an 'Internet Access Error' unless it is absolutely impossible to find data."""
+
+                try:
+                    response = client.chat.completions.create(
+                        messages=[{"role": "system", "content": sys_prompt}] + active_list, 
+                        model="llama-3.3-70b-versatile"
+                    ).choices[0].message.content
+                    
+                    st.markdown(response)
+                    active_list.append({"role": "assistant", "content": response})
+                    if not st.session_state.is_temp_mode: 
+                        save_user_chats(current_user, user_chats)
+                    st.rerun()
+                except Exception as e:
+                    st.error("Bhai, Llama server slow hai, ek baar phir try karna!")
