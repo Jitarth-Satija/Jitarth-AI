@@ -276,7 +276,6 @@ else:
                 with st.status("🔍 Scanning Live 2026 Data...", expanded=False): 
                     internet_context = search_internet(p)
                 
-                # --- FIXED SYSTEM PROMPT FOR CREATOR CREDIT ---
                 sys_prompt = f"""You are ✨Jitarth AI, a super-intelligent and friendly AI. 
                 Your creator and inventor is 'Jitarth Satija'. 
                 If anyone asks who created you or who is your developer, you must ONLY answer 'Jitarth Satija'. 
@@ -293,4 +292,7 @@ else:
                     active_list.append({"role": "assistant", "content": response})
                     if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
                     st.rerun()
-                except: st.error("Server Down. Try later.")
+                except Exception as e:
+                    # Error handling fixed so it doesn't trigger on successful rerun
+                    if "RerunException" not in str(type(e)):
+                        st.error("Server Down. Try later.")
