@@ -77,22 +77,28 @@ st.markdown("""
     .gemini-logo { 
         font-family: 'Google Sans', sans-serif; 
         font-size: 32px; 
-        font-weight: bold; 
+        font-weight: 700; 
         background: linear-gradient(to right, #4e7cfe, #f06e9c); 
         -webkit-background-clip: text; 
         -webkit-text-fill-color: transparent; 
         display: inline-flex; 
         align-items: center;
         white-space: nowrap;
-        margin-top: -5px;
+        letter-spacing: -0.5px;
     }
 
     /* J and I size adjustments */
-    .logo-j { font-size: 1.4em; line-height: 0; }
-    .i-fix { font-size: 1em; font-weight: bold; } 
+    .logo-j { font-size: 44px; line-height: 0; margin-right: -2px; }
+    .i-fix { font-size: 32px; font-weight: 700; } 
     
-    /* Login Screen Logo */
-    .login-logo-container { text-align: center; margin-top: 60px; margin-bottom: 40px; }
+    /* Login Screen Logo Specifics */
+    .login-logo-container { 
+        text-align: center; 
+        margin-top: 50px; 
+        margin-bottom: 30px; 
+        display: flex;
+        justify-content: center;
+    }
     .login-logo-text { 
         font-family: 'Google Sans', sans-serif; 
         font-size: 48px; 
@@ -102,8 +108,10 @@ st.markdown("""
         -webkit-text-fill-color: transparent; 
         display: inline-flex;
         align-items: center;
-        justify-content: center;
+        letter-spacing: -1px;
     }
+    .login-j { font-size: 64px; line-height: 0; margin-right: -2px; }
+    .login-i { font-size: 48px; font-weight: 800; }
 
     .temp-warning { background-color: rgba(255, 75, 75, 0.1); border: 1px solid #ff4b4b; color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
     footer {visibility: hidden;}
@@ -207,8 +215,8 @@ if saved_user and st.session_state.logged_in_user is None:
 
 # Login Screen
 if st.session_state.logged_in_user is None:
-    # Updated Login Logo with big J and balanced I
-    st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div></div>', unsafe_allow_html=True)
+    # Optimized Login Logo with fixed aspect and centered alignment
+    st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="login-j">J</span>itarth A<span class="login-i">I</span> ✨</div></div>', unsafe_allow_html=True)
     if st.session_state.get("forgot_mode"): recovery_ui(False)
     else:
         tab1, tab2 = st.tabs(["Login", "Sign Up"])
@@ -259,7 +267,7 @@ else:
             if st.button("⚙️"):
                 st.session_state.show_settings = not st.session_state.show_settings
                 st.rerun()
-        # Sidebar Logo with big J and balanced I
+        # Sidebar Logo
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
         
         if st.button("➕ New Chat", use_container_width=True):
