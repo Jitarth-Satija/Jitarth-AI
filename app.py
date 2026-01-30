@@ -191,10 +191,6 @@ if st.session_state.logged_in_user is None:
                 st.rerun()
             else:
                 st.error("Invalid Username or Password")
-                
-        if st.button("Recover Password?", use_container_width=True):
-            st.session_state.forgot_mode = True
-            st.rerun()
             nu = validate_username(nu_raw)
             
             if len(nu) < 5: st.markdown('<p class="validation-text" style="color:#ff4b4b;">Minimum 5 characters required</p>', unsafe_allow_html=True)
@@ -323,6 +319,7 @@ else:
                 active_list.append({"role": "assistant", "content": response})
                 if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
 
