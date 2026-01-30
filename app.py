@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import streamlit as st
 from groq import Groq
 import sqlite3
@@ -7,7 +8,6 @@ import re
 import random
 import string
 import extra_streamlit_components as stx
-from datetime import datetime, timedelta
 
 # 1. Setup - API Key
 api_key = st.secrets["GROQ_API_KEY"]
@@ -178,6 +178,10 @@ if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
 if "settings_un_sugg" not in st.session_state: st.session_state.settings_un_sugg = ""
 
 # --- Master Cookie Logic (Keep me logged in fix) ---
+# --- Fixed Login Logic (Permanent Session) ---
+if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = None
+
+# Cookie check
 saved_user = cookie_manager.get('jitarth_user_cookie')
 if saved_user and st.session_state.logged_in_user is None:
     st.session_state.logged_in_user = saved_user
@@ -199,9 +203,16 @@ if st.session_state.logged_in_user is None:
                 user = get_user_data(u_login)
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
-                    # Yahan hum toggle ke bina hi cookie set kar rahe hain taaki login rahe
-                    expiry = datetime.now() + timedelta(days=30)
-                    cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry, key="login_success_cookie")
+                    
+                    # Har mahine ki 1st date wala smart logic
+                    now = datetime.now()
+                    if now.month == 12:
+                        expiry = datetime(now.year + 1, 1, 1)
+                    else:
+                        expiry = datetime(now.year, now.month + 1, 1)
+                    
+                    # Cookie set karna (Key hamesha same rakhni chahiye)
+                    cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry)
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password")
@@ -384,6 +395,7 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
 
