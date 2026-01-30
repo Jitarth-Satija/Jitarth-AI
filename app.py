@@ -174,10 +174,14 @@ if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = N
 if "is_temp_mode" not in st.session_state: st.session_state.is_temp_mode = False
 if "show_settings" not in st.session_state: st.session_state.show_settings = False
 
-# Cookie loading logic
+# --- Master Cookie Logic (Ctrl+R Fix) ---
+import time
 saved_user = cookie_manager.get('jitarth_user_cookie')
+
+# Agar browser mein cookie hai aur session khali hai, toh login karado
 if saved_user and st.session_state.logged_in_user is None:
     st.session_state.logged_in_user = saved_user
+    st.rerun()
 
 # --- Login Screen Logic ---
 if st.session_state.logged_in_user is None:
@@ -190,14 +194,15 @@ if st.session_state.logged_in_user is None:
         with tab1:
             u_login = st.text_input("Username", key="login_u")
             p_login = st.text_input("Password", type="password", key="login_p")
-            keep_me_logged_in = st.checkbox("Keep me logged in")
+            keep_me_logged_in = st.checkbox("Keep me logged in", value=True)
             
             if st.button("Log In", use_container_width=True):
                 user = get_user_data(u_login)
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
                     if keep_me_logged_in:
-                        cookie_manager.set('jitarth_user_cookie', u_login, key="login_cookie_final")
+                        # 30 din ki expiry set kar rahe hain
+                        cookie_manager.set('jitarth_user_cookie', u_login, expires_at=time.time() + (30 * 24 * 60 * 60), key="login_success_cookie")
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password")
@@ -380,6 +385,7 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
 
