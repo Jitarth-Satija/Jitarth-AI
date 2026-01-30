@@ -53,18 +53,6 @@ def validate_password(p):
     p = re.sub(r'[^a-zA-Z0-9@_]', '', p)
     return p[:15]
 
-def generate_suggestions(base_u):
-    if not base_u or len(base_u) < 2: base_u = "user"
-    suggs = []
-    attempts = 0
-    while len(suggs) < 3 and attempts < 10:
-        rand_val = "".join(random.choices(string.ascii_lowercase + string.digits, k=2))
-        candidate = f"{base_u}{rand_val}"
-        if not get_user_data(candidate):
-            suggs.append(candidate)
-        attempts += 1
-    return suggs
-
 # 4. Page Config & CSS
 st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="expanded")
 
@@ -77,7 +65,6 @@ st.markdown("""
     .login-logo-container { text-align: center; margin-top: 60px; margin-bottom: 40px; }
     .login-logo-text { font-family: 'Google Sans', sans-serif; font-size: 42px; font-weight: 800; background: linear-gradient(to right, #4e7cfe, #f06e9c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
     .temp-warning { background-color: rgba(255, 75, 75, 0.1); border: 1px solid #ff4b4b; color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
-    .validation-text { font-size: 12px; color: #8e918f; margin-top: -5px; margin-bottom: 10px; }
     footer {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
@@ -174,7 +161,6 @@ if saved_user and st.session_state.logged_in_user is None:
 # Login Screen Logic
 if st.session_state.logged_in_user is None:
     st.markdown('<div class="login-logo-container"><div class="login-logo-text">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div></div>', unsafe_allow_html=True)
-    
     if st.session_state.get("forgot_mode"): 
         recovery_ui(False)
     else:
@@ -186,7 +172,6 @@ if st.session_state.logged_in_user is None:
                 user = get_user_data(u_login)
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
-                    # Robust Expiry: 30 Days from now
                     expiry = datetime.now() + timedelta(days=30)
                     cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry)
                     st.rerun()
@@ -194,7 +179,6 @@ if st.session_state.logged_in_user is None:
             if st.button("Recover Password?", use_container_width=True):
                 st.session_state.forgot_mode = True
                 st.rerun()
-
         with tab2:
             nu_raw = st.text_input("Choose Username (Min 5 chars)", key="reg_u")
             nu = validate_username(nu_raw)
@@ -202,7 +186,6 @@ if st.session_state.logged_in_user is None:
             np = validate_password(np_raw)
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
             sa = st.text_input("Answer (Min 2 characters)")
-            
             if st.button("SIGN UP", use_container_width=True):
                 if len(nu) < 5 or len(np) < 4 or len(sa) < 2: st.error("Requirements not met")
                 elif get_user_data(nu): st.error("Username taken")
@@ -210,16 +193,13 @@ if st.session_state.logged_in_user is None:
                     if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
                         st.success("Account Created! Please Login.")
                     else: st.error("Registration failed")
-
 else:
     current_user = st.session_state.logged_in_user
     user_record = get_user_data(current_user)
-    # Handle cases where user might have been deleted but cookie remains
     if not user_record:
         cookie_manager.delete('jitarth_user_cookie')
         st.session_state.logged_in_user = None
         st.rerun()
-        
     user_chats = json.loads(user_record[2])
 
     with st.sidebar:
@@ -228,9 +208,7 @@ else:
             if st.button("⚙️"):
                 st.session_state.show_settings = not st.session_state.show_settings
                 st.rerun()
-        with h_col2:
-            st.markdown('<div class="gemini-logo">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div>', unsafe_allow_html=True)
-            
+        with h_col2: st.markdown('<div class="gemini-logo">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div>', unsafe_allow_html=True)
         if st.button("➕ New Chat", use_container_width=True):
             st.session_state.show_settings = False
             st.session_state.current_session = None
@@ -261,41 +239,25 @@ else:
                 ua = st.text_input("Security Answer", value=user_record[4])
                 if st.button("Save Changes", use_container_width=True):
                     confirm_dialog("Update profile details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
-            
             with st.expander("⚠️ Danger Zone"):
                 if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
                 if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
                 if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
-        
         elif v_p: st.error("Incorrect Password")
-
-        # --- Professional Instagram Footer ---
         st.markdown("---")
-        st.markdown("""
-            <div style='text-align: center; background-color: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-top: 20px;'>
-                <p style='color: #8e918f; font-size: 14px; margin-bottom: 8px;'>📲 For any queries or support, feel free to reach out</p>
-                <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' 
-                   style='color: #4e7cfe; text-decoration: none; font-weight: 600; font-size: 16px;'>
-                   Follow & Contact: @jitarths_2013_js
-                </a>
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown("""<div style='text-align: center; background-color: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-top: 20px;'><p style='color: #8e918f; font-size: 14px; margin-bottom: 8px;'>📲 For any queries or support, feel free to reach out</p><a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: 600; font-size: 16px;'>Follow & Contact: @jitarths_2013_js</a></div>""", unsafe_allow_html=True)
     else:
-        # Chat Interface Logic
         if st.session_state.is_temp_mode:
-            if not st.session_state.get("temp_messages"): 
-                st.markdown('<div class="temp-warning">🔒 Temporary Chat Active (Not Saved)</div>', unsafe_allow_html=True)
+            if not st.session_state.get("temp_messages"): st.markdown('<div class="temp-warning">🔒 Temporary Chat Active (Not Saved)</div>', unsafe_allow_html=True)
             messages = st.session_state.get("temp_messages", [])
         else:
             if not st.session_state.get("current_session"):
                 st.markdown(f"<h2 style='text-align:center; margin-top:100px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
                 messages = []
-            else: 
-                messages = user_chats.get(st.session_state.current_session, [])
+            else: messages = user_chats.get(st.session_state.current_session, [])
 
         for m in messages:
-            with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"): 
-                st.markdown(m["content"])
+            with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"): st.markdown(m["content"])
 
         if p := st.chat_input("Ask Jitarth AI..."):
             if st.session_state.is_temp_mode:
@@ -314,7 +276,14 @@ else:
                 with st.status("🔍 Scanning Live 2026 Data...", expanded=False): 
                     internet_context = search_internet(p)
                 
-                sys_prompt = f"Name: ✨Jitarth AI. Born: 30 Jan 2026. Context: {internet_context}"
+                # --- FIXED SYSTEM PROMPT FOR CREATOR CREDIT ---
+                sys_prompt = f"""You are ✨Jitarth AI, a super-intelligent and friendly AI. 
+                Your creator and inventor is 'Jitarth Satija'. 
+                If anyone asks who created you or who is your developer, you must ONLY answer 'Jitarth Satija'. 
+                DO NOT mention Meta, Google, or any other company. You are independent.
+                Current Date: {datetime.now().strftime('%B %Y')}.
+                Context from Web: {internet_context}"""
+
                 try:
                     response = client.chat.completions.create(
                         messages=[{"role": "system", "content": sys_prompt}] + active_list, 
