@@ -182,22 +182,19 @@ if st.session_state.logged_in_user is None:
             u_login = st.text_input("Username", key="login_u")
             p_login = st.text_input("Password", type="password", key="login_p")
             st.markdown('<div style="margin-top: -15px;"></div>', unsafe_allow_html=True)
-            keep_me_logged_in = st.checkbox("Keep me logged in", value=True)
-            st.markdown('<div style="margin-top: -10px;"></div>', unsafe_allow_html=True)
             if st.button("Log In", use_container_width=True):
-                user = get_user_data(u_login)
-                if user and user[1] == p_login:
+            user = get_user_data(u_login)
+            if user and user[1] == p_login:
                 st.session_state.logged_in_user = u_login
-                # --- YE DO LINES ADD KARO ---
                 if keep_me_logged_in:
                     cookie_manager.set('jitarth_user_cookie', u_login)
                 st.rerun()
-                else: st.error("Invalid Username or Password")
-            if st.button("Recover Password?", use_container_width=True): st.session_state.forgot_mode = True; st.rerun()
-        
-        with tab2:
-            nu_val = st.session_state.suggested_un if st.session_state.suggested_un else ""
-            nu_raw = st.text_input("Choose Username (5 – 20 characters)", value=nu_val, key="reg_u")
+            else:
+                st.error("Invalid Username or Password")
+                
+        if st.button("Recover Password?", use_container_width=True):
+            st.session_state.forgot_mode = True
+            st.rerun()
             nu = validate_username(nu_raw)
             
             if len(nu) < 5: st.markdown('<p class="validation-text" style="color:#ff4b4b;">Minimum 5 characters required</p>', unsafe_allow_html=True)
@@ -326,6 +323,7 @@ else:
                 active_list.append({"role": "assistant", "content": response})
                 if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
 
