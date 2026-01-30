@@ -189,18 +189,19 @@ if st.session_state.logged_in_user is None:
     
     if st.session_state.get("forgot_mode"): 
         recovery_ui(False)
-    else:
-        tab1, tab2 = st.tabs(["Login", "Sign Up"])
-        with tab1:
+    with tab1:
             u_login = st.text_input("Username", key="login_u")
             p_login = st.text_input("Password", type="password", key="login_p")
-            keep_me_logged_in = st.checkbox("Keep me logged in", value=True)
+            # "Keep me logged in" checkbox yahan se hata diya gaya hai
             
             if st.button("Log In", use_container_width=True):
                 user = get_user_data(u_login)
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
-                    if keep_me_logged_in:
+                    # Cookie set karne ka jhanjhat khatam
+                    st.rerun()
+                else:
+                    st.error("Invalid Username or Password")
                         expiry = datetime.now() + timedelta(days=30)
                         cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry, key="login_success_cookie")
                     st.rerun()
@@ -385,3 +386,4 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
