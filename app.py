@@ -72,8 +72,22 @@ st.markdown("""
     <style>
     .stApp { background-color: #131314; color: #e3e3e3; }
     [data-testid="stSidebar"] { background-color: #1e1f20 !important; border-right: 1px solid #3c4043; }
-    .gemini-logo { font-family: 'Google Sans', sans-serif; font-size: 28px; font-weight: bold; background: linear-gradient(to right, #4e7cfe, #f06e9c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; white-space: nowrap; }
-    .sidebar-i-fix { font-size: 35px; }
+    
+    /* LOGO SIZE INCREASED HERE */
+    .gemini-logo { 
+        font-family: 'Google Sans', sans-serif; 
+        font-size: 36px; /* Pehle 28px tha, ab bada kar diya hai */
+        font-weight: bold; 
+        background: linear-gradient(to right, #4e7cfe, #f06e9c); 
+        -webkit-background-clip: text; 
+        -webkit-text-fill-color: transparent; 
+        display: inline-block; 
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    
+    .sidebar-i-fix { font-size: 42px; } /* Logo ke sath 'I' ka size bhi bada kiya */
+    
     .login-logo-container { text-align: center; margin-top: 60px; margin-bottom: 40px; }
     .login-logo-text { font-family: 'Google Sans', sans-serif; font-size: 42px; font-weight: 800; background: linear-gradient(to right, #4e7cfe, #f06e9c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
     .temp-warning { background-color: rgba(255, 75, 75, 0.1); border: 1px solid #ff4b4b; color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
