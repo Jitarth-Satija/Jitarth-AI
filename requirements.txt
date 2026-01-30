@@ -1,3 +1,4 @@
 streamlit
 groq
+extra-streamlit-components
 duckduckgo_search
