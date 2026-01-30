@@ -6,11 +6,12 @@ from duckduckgo_search import DDGS
 import re
 import random
 import string
-
+# Line 9 ya 10 ke paas daal do
+import extra_streamlit_components as stx
 # 1. Setup - API Key
 api_key = st.secrets["GROQ_API_KEY"]
 client = Groq(api_key=api_key)
-
+cookie_manager = stx.CookieManager()
 # 2. Deep News Search Function
 def search_internet(query):
     try:
@@ -129,7 +130,9 @@ def confirm_dialog(message, action_type, data=None):
     st.write("---")
     cols = st.columns(2)
     if cols[0].button("Yes, Proceed", use_container_width=True, type="primary"):
-        if action_type == "logout": st.session_state.logged_in_user = None
+        if action_type == "logout":
+            cookie_manager.delete('jitarth_user_cookie')
+            st.session_state.logged_in_user = None
         elif action_type == "delete_chats": save_user_chats(st.session_state.logged_in_user, {})
         elif action_type == "delete_account": 
             delete_user_account(st.session_state.logged_in_user)
@@ -166,7 +169,9 @@ if "is_temp_mode" not in st.session_state: st.session_state.is_temp_mode = False
 if "show_settings" not in st.session_state: st.session_state.show_settings = False
 if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
 if "settings_un_sugg" not in st.session_state: st.session_state.settings_un_sugg = ""
-
+saved_user = cookie_manager.get('jitarth_user_cookie')
+if saved_user and st.session_state.logged_in_user is None:
+    st.session_state.logged_in_user = saved_user
 if st.session_state.logged_in_user is None:
     st.markdown('<div class="login-logo-container"><div class="login-logo-text">Jitarth A<span class="login-i-fix">I</span> <span class="login-star-fix">✨</span></div></div>', unsafe_allow_html=True)
     
@@ -181,7 +186,12 @@ if st.session_state.logged_in_user is None:
             st.markdown('<div style="margin-top: -10px;"></div>', unsafe_allow_html=True)
             if st.button("Log In", use_container_width=True):
                 user = get_user_data(u_login)
-                if user and user[1] == p_login: st.session_state.logged_in_user = u_login; st.rerun()
+                if user and user[1] == p_login:
+                st.session_state.logged_in_user = u_login
+                # --- YE DO LINES ADD KARO ---
+                if keep_me_logged_in:
+                    cookie_manager.set('jitarth_user_cookie', u_login)
+                st.rerun()
                 else: st.error("Invalid Username or Password")
             if st.button("Recover Password?", use_container_width=True): st.session_state.forgot_mode = True; st.rerun()
         
@@ -316,6 +326,7 @@ else:
                 active_list.append({"role": "assistant", "content": response})
                 if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
 
