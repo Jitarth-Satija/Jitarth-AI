@@ -132,7 +132,10 @@ def confirm_dialog(message, action_type, data=None):
     cols = st.columns(2)
     if cols[0].button("Yes, Proceed", use_container_width=True, type="primary"):
         if action_type == "logout":
-            cookie_manager.delete('jitarth_user_cookie')
+            try:
+                cookie_manager.delete('jitarth_user_cookie')
+            except:
+                pass
             st.session_state.logged_in_user = None
         elif action_type == "delete_chats": 
             save_user_chats(st.session_state.logged_in_user, {})
@@ -377,3 +380,4 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
