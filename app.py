@@ -623,7 +623,7 @@ else:
                 <div style='text-align: center; background-color: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-top: 20px;'>
 
                     
-                    </a>
+                    
 
                 </div>
 
@@ -728,4 +728,5 @@ else:
                     if "RerunException" not in str(type(e)):
 
                         st.error("Server Down")
+
 
