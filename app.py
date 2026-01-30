@@ -8,6 +8,7 @@ import re
 import random
 import string
 import extra_streamlit_components as stx
+import os
 
 # 1. Setup - API Key
 api_key = st.secrets["GROQ_API_KEY"]
@@ -170,18 +171,14 @@ def recovery_ui(is_from_settings=False):
         else: st.session_state.forgot_mode = False
         st.rerun()
 
-# 8. Main UI Logic
+# 8. Main UI Logic Init
 if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = None
 if "is_temp_mode" not in st.session_state: st.session_state.is_temp_mode = False
 if "show_settings" not in st.session_state: st.session_state.show_settings = False
 if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
 if "settings_un_sugg" not in st.session_state: st.session_state.settings_un_sugg = ""
 
-# --- Master Cookie Logic (Keep me logged in fix) ---
-# --- Fixed Login Logic (Permanent Session) ---
-if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = None
-
-# Cookie check
+# --- MASTER COOKIE LOGIC (Automatic Login) ---
 saved_user = cookie_manager.get('jitarth_user_cookie')
 if saved_user and st.session_state.logged_in_user is None:
     st.session_state.logged_in_user = saved_user
@@ -204,15 +201,17 @@ if st.session_state.logged_in_user is None:
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
                     
-                    # Har mahine ki 1st date wala smart logic
+                    # Smart Logic: Next Month's 1st Date
                     now = datetime.now()
                     if now.month == 12:
                         expiry = datetime(now.year + 1, 1, 1)
                     else:
                         expiry = datetime(now.year, now.month + 1, 1)
                     
-                    # Cookie set karna (Key hamesha same rakhni chahiye)
+                    # Cookie set and save
                     cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry)
+                    # We don't need a separate save() here as most managers auto-save on set, 
+                    # but we trigger a rerun to finalize
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password")
@@ -395,7 +394,3 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
-
-
-
-
