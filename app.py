@@ -216,7 +216,9 @@ if saved_user and st.session_state.logged_in_user is None:
 # Login Screen
 if st.session_state.logged_in_user is None:
     # Optimized Login Logo with fixed aspect and centered alignment
-    st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="login-j">J</span>itarth A<span class="login-i">I</span> ✨</div></div>', unsafe_allow_html=True)
+   st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="login-j">J</span>itarth A<span class="login-i">I</span> ✨</div></div>', unsafe_allow_html=True)
+# Niche wali line add kar do
+st.markdown("<p style='text-align:center; color:#8e918f; margin-top:-25px; margin-bottom:20px;'>Connect: <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color:#4e7cfe; text-decoration:none; font-weight:bold;'>@jitarths_2013_js</a></p>", unsafe_allow_html=True)
     if st.session_state.get("forgot_mode"): recovery_ui(False)
     else:
         tab1, tab2 = st.tabs(["Login", "Sign Up"])
@@ -289,6 +291,17 @@ else:
                 st.session_state.current_session = title
                 st.session_state.is_temp_mode = False
                 st.rerun()
+        
+        # Loop ke bahar, with st.sidebar ke andar hi ye add karo:
+        st.write("---")
+        st.markdown("""
+            <div style='text-align: center; padding: 10px;'>
+                <p style='margin-bottom: 5px; font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p>
+                <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: bold; font-size: 14px;'>
+                    @jitarths_2013_js
+                </a>
+            </div>
+        """, unsafe_allow_html=True)
 
     if st.session_state.show_settings:
         st.title("⚙️ Account Settings")
@@ -366,3 +379,4 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
