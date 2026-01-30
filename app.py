@@ -406,4 +406,5 @@ else:
                         save_user_chats(current_user, user_chats)
                     st.rerun()
                 except Exception as e:
-                    st.error("Bhai, Llama server slow hai, ek baar phir try karna!")
+                    st.error("Jitarth AI's Server Is Down. Please Try Again Later")
+
