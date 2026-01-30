@@ -374,7 +374,7 @@ else:
             with st.chat_message("assistant", avatar="✨"):
                 with st.status("🔍 Scanning Live Data...", expanded=False): 
                     internet_context = search_internet(p)
-                sys_prompt = f"Your name is Jitarth AI, invented by Jitarth Satija. Current date: 2026. Use this context: {internet_context}"
+                sys_prompt = f"Your name is Jitarth AI, invented by Jitarth Satija. You were born on 30th January 2026. Current date: 2026. Use this context: {internet_context}"
                 response = client.chat.completions.create(
                     messages=[{"role": "system", "content": sys_prompt}] + active_list, 
                     model="llama-3.3-70b-versatile"
@@ -384,3 +384,4 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
