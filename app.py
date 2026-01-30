@@ -120,9 +120,20 @@ st.markdown("""
     [data-testid="column"] {
         display: flex;
         align-items: center;
+        }
+    .bday-timer {
+        text-align: center;
+        background: rgba(78, 124, 254, 0.1);
+        border: 1px solid rgba(78, 124, 254, 0.3);
+        border-radius: 8px;
+        padding: 8px;
+        margin: 10px 0;
+        color: #4e7cfe;
+        font-family: 'monospace';
     }
     </style>
     """, unsafe_allow_html=True)
+        
 
 # 5. Database Functions
 def get_user_data(username):
@@ -276,6 +287,13 @@ else:
                 st.session_state.show_settings = not st.session_state.show_settings
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
+            # Birthday Timer
+        st.markdown("""
+            <div class="bday-timer">
+                🎂 <b>Today is my Birthday!</b><br>
+                ✨ Time: 07:07:07
+            </div>
+        """, unsafe_allow_html=True)
         
         if st.button("➕ New Chat", use_container_width=True):
             st.session_state.show_settings = False
@@ -374,3 +392,4 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
