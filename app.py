@@ -183,11 +183,11 @@ if st.session_state.logged_in_user is None:
             p_login = st.text_input("Password", type="password", key="login_p")
             st.markdown('<div style="margin-top: -15px;"></div>', unsafe_allow_html=True)
             if st.button("Log In", use_container_width=True):
-            user = get_user_data(u_login)
-            if user and user[1] == p_login:
-                st.session_state.logged_in_user = u_login
-                if keep_me_logged_in:
-                    cookie_manager.set('jitarth_user_cookie', u_login)
+                user = get_user_data(u_login)
+                if user and user[1] == p_login:
+                    st.session_state.logged_in_user = u_login
+                    if keep_me_logged_in:
+                        cookie_manager.set('jitarth_user_cookie', u_login)
                 st.rerun()
             else:
                 st.error("Invalid Username or Password")
@@ -319,6 +319,7 @@ else:
                 active_list.append({"role": "assistant", "content": response})
                 if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
 
