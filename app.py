@@ -59,6 +59,8 @@ def validate_username(u):
     return u[:20]
 
 def validate_password(p):
+    # Fixed: Now strictly removes all spaces from password
+    p = p.replace(" ", "") 
     p = re.sub(r'[^a-zA-Z0-9@_]', '', p)
     if p.count('@') > 1: p = p[:p.rfind('@')]
     if p.count('_') > 1: p = p[:p.rfind('_')]
@@ -237,17 +239,20 @@ if st.session_state.logged_in_user is None:
                     st.rerun()
 
             np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p")
+            # Fixed: Validation logic updated to handle spaces in real-time
             np = validate_password(np_raw)
             if len(np) < 4: 
                 st.markdown('<p class="validation-text" style="color:#ff4b4b;">Minimum 4 characters required</p>', unsafe_allow_html=True)
             else: 
-                st.markdown(f'<p class="validation-text">{10 - len(np)} characters left</p>', unsafe_allow_html=True)
+                st.markdown(f'<p class="validation-text">{10 - len(np)} characters left (No spaces allowed)</p>', unsafe_allow_html=True)
             
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
             sa = st.text_input("Answer (Min 2 characters)")
             
             if st.button("SIGN UP", use_container_width=True):
-                if get_user_data(nu): 
+                if " " in np_raw:
+                    st.error("Password cannot contain spaces!")
+                elif get_user_data(nu): 
                     st.error("Username is already in use!")
                 elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
                     if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa): 
@@ -330,7 +335,9 @@ else:
                     ua = st.text_input("Security Answer (Min 2 characters)", value=user_record[4])
                     
                     if st.button("Save Changes", use_container_width=True):
-                        if len(nu_settings) >= 5 and len(np_settings) >= 4 and len(ua) >= 2:
+                        if " " in np_raw_settings:
+                            st.error("Password cannot contain spaces!")
+                        elif len(nu_settings) >= 5 and len(np_settings) >= 4 and len(ua) >= 2:
                             confirm_dialog("Update profile details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
                         else: 
                             st.error("Requirements not met!")
@@ -407,4 +414,3 @@ else:
                     st.rerun()
                 except Exception as e:
                     st.error("Jitarth AI's Server Is Down. Please Try Again Later")
-
