@@ -374,7 +374,7 @@ else:
             with st.chat_message("assistant", avatar="✨"):
                 with st.status("🔍 Scanning Live Data...", expanded=False): 
                     internet_context = search_internet(p)
-                sys_prompt = f"Your name is Jitarth AI, invented by Jitarth Satija. You were born on 30th January 2026. You are an AI and do not have a gender. Current date: 2026. Use this context: {internet_context}"
+                sys_prompt = f"Your name is Jitarth AI, invented by Jitarth Satija. You were born on 30th January 2026. You are a highly advanced AI, not a human, so you don't have a gender. If anyone asks, simply state that you are an AI and therefore have no gender. Current date: 2026. Use this context: {internet_context}"
                 response = client.chat.completions.create(
                     messages=[{"role": "system", "content": sys_prompt}] + active_list, 
                     model="llama-3.3-70b-versatile"
@@ -384,5 +384,6 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
