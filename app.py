@@ -8,6 +8,7 @@ import os
 st.set_page_config(page_title="Jitarth AI", page_icon="🤖", layout="centered")
 
 # --- API SETUP ---
+# Fetching the key directly from Streamlit Secrets
 try:
     api_key = st.secrets["GROQ_API_KEY"]
 except Exception:
@@ -49,7 +50,7 @@ def login_user(username, password):
     data = cursor.fetchall()
     return data
 
-# --- SESSION STATE (The "Keep Logged In" Engine) ---
+# --- SESSION STATE ---
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
@@ -68,17 +69,12 @@ if not st.session_state.logged_in:
         st.subheader("Login Section")
         username = st.text_input("User Name")
         password = st.text_input("Password", type='password')
-        
-        # Keep me logged in checkbox (visual/logic placeholder)
-        keep_me_logged_in = st.checkbox("Keep me logged in")
-        
         if st.button("Login"):
             hashed_pswd = make_hashes(password)
             result = login_user(username, check_hashes(password, hashed_pswd))
             if result:
                 st.session_state.logged_in = True
                 st.session_state.username = username
-                # If checked, session state remains active during the current browser session
                 st.success(f"Welcome {username}!")
                 st.rerun()
             else:
@@ -96,17 +92,9 @@ if not st.session_state.logged_in:
                 st.error("Username already exists!")
 
 else:
-    # --- LOGGED IN AREA ---
     st.sidebar.write(f"Logged in as: **{st.session_state.username}**")
-    
-    # Sidebar features
-    if st.sidebar.button("Clear Chat"):
-        st.session_state.messages = []
-        st.rerun()
-
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
-        st.session_state.username = ""
         st.rerun()
 
     # Chat Interface
@@ -121,11 +109,11 @@ else:
 
         with st.chat_message("assistant"):
             try:
-                # Using the latest powerful llama model
+                # Optimized for Streamlit Cloud
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[
-                        {"role": "system", "content": "You are Jitarth AI, a helpful and witty assistant created by Jitarth Satija."},
+                        {"role": "system", "content": "You are Jitarth AI, a helpful and witty assistant."},
                         *st.session_state.messages
                     ],
                 )
@@ -133,8 +121,4 @@ else:
                 st.markdown(response)
                 st.session_state.messages.append({"role": "assistant", "content": response})
             except Exception as e:
-                # Specific check for API key issues
-                if "Authentication" in str(e):
-                    st.error("Groq API Key Error! Check your Streamlit Secrets.")
-                else:
-                    st.error(f"Error: {e}")
+                st.error(f"Groq API Error: {e}")
