@@ -287,13 +287,10 @@ else:
                 st.session_state.show_settings = not st.session_state.show_settings
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
-            # Birthday Timer
-        st.markdown("""
-            <div class="bday-timer">
-                🎂 <b>Today is my Birthday!</b><br>
-                ✨ Time: 07:07:07
-            </div>
-        """, unsafe_allow_html=True)
+            
+        # Sirf aaj (30 Jan) ke liye birthday timer
+        if datetime.now().month == 1 and datetime.now().day == 30:
+            st.markdown('<div class="bday-timer">🎂 <b>Today is my Birthday!</b><br>✨ Time: 07:07:07</div>', unsafe_allow_html=True)
         
         if st.button("➕ New Chat", use_container_width=True):
             st.session_state.show_settings = False
@@ -392,4 +389,5 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
 
