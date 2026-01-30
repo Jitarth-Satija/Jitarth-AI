@@ -622,12 +622,7 @@ else:
 
                 <div style='text-align: center; background-color: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-top: 20px;'>
 
-                    <p style='color: #8e918f; font-size: 14px; margin-bottom: 8px;'>📲 Follow us & Contact us for any query</p>
-
-                    <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: bold; font-size: 16px;'>
-
-                        Instagram: @jitarths_2013_js
-
+                    
                     </a>
 
                 </div>
@@ -733,3 +728,4 @@ else:
                     if "RerunException" not in str(type(e)):
 
                         st.error("Server Down")
+
