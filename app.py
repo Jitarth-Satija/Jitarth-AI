@@ -7,6 +7,7 @@ import re
 import random
 import string
 import extra_streamlit_components as stx
+from datetime import datetime, timedelta
 
 # 1. Setup - API Key
 api_key = st.secrets["GROQ_API_KEY"]
@@ -173,12 +174,11 @@ def recovery_ui(is_from_settings=False):
 if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = None
 if "is_temp_mode" not in st.session_state: st.session_state.is_temp_mode = False
 if "show_settings" not in st.session_state: st.session_state.show_settings = False
+if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
+if "settings_un_sugg" not in st.session_state: st.session_state.settings_un_sugg = ""
 
-# --- Master Cookie Logic (Ctrl+R Fix) ---
-import time
+# --- Master Cookie Logic (Keep me logged in fix) ---
 saved_user = cookie_manager.get('jitarth_user_cookie')
-
-# Agar browser mein cookie hai aur session khali hai, toh login karado
 if saved_user and st.session_state.logged_in_user is None:
     st.session_state.logged_in_user = saved_user
     st.rerun()
@@ -201,13 +201,13 @@ if st.session_state.logged_in_user is None:
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
                     if keep_me_logged_in:
-                        # 30 din ki expiry set kar rahe hain
-                        cookie_manager.set('jitarth_user_cookie', u_login, expires_at=time.time() + (30 * 24 * 60 * 60), key="login_success_cookie")
+                        expiry = datetime.now() + timedelta(days=30)
+                        cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry, key="login_success_cookie")
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password")
             
-            if st.button("Recover Password?", use_container_width=True):
+            if st.button("Recover Password?", use_container_width=True, key="login_recovery_btn"):
                 st.session_state.forgot_mode = True
                 st.rerun()
 
@@ -290,7 +290,7 @@ else:
             recovery_ui(True)
         else:
             st.title("⚙️ Account Settings")
-            if st.button("Recover Password?"): 
+            if st.button("Recover Password?", key="settings_recovery_btn"): 
                 st.session_state.settings_recover_mode = True
                 st.rerun()
             
@@ -385,8 +385,3 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
-
-
-
-
-
