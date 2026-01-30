@@ -377,10 +377,9 @@ else:
                       - If the user asks in English, answer in English. 
                       - If the user asks in Hindi/Hinglish, answer in Hindi/Hinglish.
                     
-                    - FAMILY INFO (Rudransh Satija):
-                      1. If asked about Jitarth's brother: State "Rudransh Satija".
-                      2. If asked for Rudransh's birthday: State "16th October 2023".
-                      3. If asked for Rudransh's gender: State "Male".
+                    - FAMILY INFO:
+                      1. MOTHER: If asked about Jitarth's mother, state "Vartika Satija". If asked for her birthday, state "17th September 1984". If asked for gender, state "Female".
+                      2. BROTHER (Rudransh Satija): If asked about Jitarth's brother, state "Rudransh Satija". If asked for his birthday, state "16th October 2023". If asked for gender, state "Male".
                     
                     - MEET GERA INFO (Strict Step-by-Step Rule):
                       1. If asked for Jitarth's best friend: Only provide the name "Meet Gera".
@@ -388,7 +387,7 @@ else:
                       3. If asked for Meet Gera's gender: Only then state "Female".
                       4. Relationship: Meet Gera is the Best Friend of Jitarth Satija.
                     
-                    - STRICT PRIVACY: Never mention Meet Gera or Rudransh Satija unless specifically asked about them.
+                    - STRICT PRIVACY: Never mention family members or friends unless specifically asked about them.
                     
                     - BIRTHDAY RESPONSE: If asked about your (AI's) birthday, say: "Today is my birthday, 30th January 2026! I was born at exactly 07:07:07."
                     
@@ -408,6 +407,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
 
 
 
