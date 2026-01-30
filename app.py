@@ -15,7 +15,7 @@ api_key = st.secrets["GROQ_API_KEY"]
 client = Groq(api_key=api_key)
 cookie_manager = stx.CookieManager()
 
-# 2. Deep News Search Function (FIXED FOR BETTER SEARCH)
+# 2. Deep News Search Function
 def search_internet(query):
     try:
         with DDGS() as ddgs:
@@ -26,9 +26,9 @@ def search_internet(query):
             if results:
                 context = "\n".join([f"Source: {r.get('title', 'No Title')} - {r.get('body', r.get('snippet', ''))}" for r in results])
                 return context
-            return "No live internet results found. Please answer based on your current knowledge of 2025/2026."
-    except Exception as e:
-        return "Search currently unavailable. Please provide the best answer from your training data."
+            return "No live internet results found. Please answer based on your current knowledge."
+    except Exception:
+        return "Search currently unavailable."
 
 # 3. Database Initialization
 def init_db():
@@ -46,16 +46,11 @@ SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favouri
 # Input Validation Helpers
 def validate_username(u):
     u = re.sub(r'[^a-zA-Z0-9 @ _]', '', u)
-    if u.count(' ') > 2: u = u[:u.rfind(' ')]
-    if u.count('@') > 1: u = u[:u.rfind('@')]
-    if u.count('_') > 1: u = u[:u.rfind('_')]
     return u[:20]
 
 def validate_password(p):
-    p = p.replace(" ", "") # Space allowed nahi hai
+    p = p.replace(" ", "") 
     p = re.sub(r'[^a-zA-Z0-9@_]', '', p)
-    if p.count('@') > 1: p = p[:p.rfind('@')]
-    if p.count('_') > 1: p = p[:p.rfind('_')]
     return p[:10]
 
 def generate_suggestions(base_u):
@@ -78,15 +73,10 @@ st.markdown("""
     .stApp { background-color: #131314; color: #e3e3e3; }
     [data-testid="stSidebar"] { background-color: #1e1f20 !important; border-right: 1px solid #3c4043; }
     .gemini-logo { font-family: 'Google Sans', sans-serif; font-size: 28px; font-weight: bold; background: linear-gradient(to right, #4e7cfe, #f06e9c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; white-space: nowrap; }
-    .gemini-logo::first-letter, .gemini-logo::after { font-size: 35px; }
     .sidebar-i-fix { font-size: 35px; }
     .login-logo-container { text-align: center; margin-top: 60px; margin-bottom: 40px; }
     .login-logo-text { font-family: 'Google Sans', sans-serif; font-size: 42px; font-weight: 800; background: linear-gradient(to right, #4e7cfe, #f06e9c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
-    .login-logo-text::first-letter { font-size: 55px; }
-    .login-i-fix { font-size: 55px; }
-    .login-star-fix { font-size: 55px; }
     .temp-warning { background-color: rgba(255, 75, 75, 0.1); border: 1px solid #ff4b4b; color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
-    .validation-text { font-size: 12px; color: #8e918f; margin-top: -15px; margin-bottom: 10px; }
     footer {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
@@ -135,19 +125,18 @@ def confirm_dialog(message, action_type, data=None):
     cols = st.columns(2)
     if cols[0].button("Yes, Proceed", use_container_width=True, type="primary"):
         if action_type == "logout":
-            try: cookie_manager.delete('jitarth_user_cookie')
-            except: pass
+            cookie_manager.delete('jitarth_user_cookie')
             st.session_state.logged_in_user = None
         elif action_type == "delete_chats": 
             save_user_chats(st.session_state.logged_in_user, {})
         elif action_type == "delete_account": 
             delete_user_account(st.session_state.logged_in_user)
+            cookie_manager.delete('jitarth_user_cookie')
             st.session_state.logged_in_user = None
         elif action_type == "update_profile":
             if update_user_credentials(*data): 
                 st.session_state.logged_in_user = data[1]
-                st.session_state.update_success = True
-            else: st.session_state.update_error = "Username already in use!"
+            else: st.error("Error updating profile")
         st.rerun()
     if cols[1].button("No, Cancel", use_container_width=True): st.rerun()
 
@@ -174,7 +163,6 @@ if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = N
 if "is_temp_mode" not in st.session_state: st.session_state.is_temp_mode = False
 if "show_settings" not in st.session_state: st.session_state.show_settings = False
 if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
-if "settings_un_sugg" not in st.session_state: st.session_state.settings_un_sugg = ""
 
 # Master Cookie Login
 saved_user = cookie_manager.get('jitarth_user_cookie')
@@ -184,7 +172,7 @@ if saved_user and st.session_state.logged_in_user is None:
 
 # Login Screen
 if st.session_state.logged_in_user is None:
-    st.markdown('<div class="login-logo-container"><div class="login-logo-text">Jitarth A<span class="login-i-fix">I</span> <span class="login-star-fix">✨</span></div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-logo-container"><div class="login-logo-text">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div></div>', unsafe_allow_html=True)
     if st.session_state.get("forgot_mode"): recovery_ui(False)
     else:
         tab1, tab2 = st.tabs(["Login", "Sign Up"])
@@ -198,12 +186,12 @@ if st.session_state.logged_in_user is None:
                     cookie_manager.set('jitarth_user_cookie', u_login)
                     st.rerun()
                 else: st.error("Invalid Username or Password")
-            if st.button("Recover Password?", use_container_width=True, key="login_recovery_btn"):
+            if st.button("Recover Password?", use_container_width=True):
                 st.session_state.forgot_mode = True
                 st.rerun()
         with tab2:
             nu_val = st.session_state.suggested_un
-            nu_raw = st.text_input("Choose Username (5 – 20 characters)", value=nu_val, key="reg_u")
+            nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u")
             nu = validate_username(nu_raw)
             st.write("Suggestions:")
             cols = st.columns(3)
@@ -217,8 +205,7 @@ if st.session_state.logged_in_user is None:
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
             sa = st.text_input("Answer (Min 2 characters)")
             if st.button("SIGN UP", use_container_width=True):
-                if " " in np_raw: st.error("Password cannot contain spaces!")
-                elif get_user_data(nu): st.error("Username is already in use!")
+                if get_user_data(nu): st.error("Username taken!")
                 elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
                     if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
                         st.success("Account Created!")
@@ -233,19 +220,29 @@ else:
     with st.sidebar:
         h_col1, h_col2 = st.columns([0.2, 0.8])
         with h_col1:
-            if st.button("⚙️", key="top_settings_icon"):
+            if st.button("⚙️"):
                 st.session_state.show_settings = not st.session_state.show_settings
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div>', unsafe_allow_html=True)
+        
         if st.button("➕ New Chat", use_container_width=True):
             st.session_state.show_settings = False
             st.session_state.current_session = None
+            st.session_state.is_temp_mode = False
             st.rerun()
+            
+        if st.button("🤫 Temporary Chat", use_container_width=True):
+            st.session_state.show_settings = False
+            st.session_state.is_temp_mode = True
+            st.session_state.temp_messages = []
+            st.rerun()
+            
         st.write("---")
         for title in reversed(list(user_chats.keys())):
             if st.button(f"💬 {title[:20]}...", key=f"sb_{title}", use_container_width=True):
                 st.session_state.show_settings = False
                 st.session_state.current_session = title
+                st.session_state.is_temp_mode = False
                 st.rerun()
 
     if st.session_state.show_settings:
@@ -254,20 +251,17 @@ else:
         if v_p == user_record[1]:
             st.success("Settings Unlocked ✅")
             with st.expander("👤 Update Profile Information", expanded=True):
-                nu_raw_settings = st.text_input("New Username", value=current_user)
-                nu_settings = validate_username(nu_raw_settings)
-                np_raw_settings = st.text_input("New Password", value=user_record[1], type="password")
-                np_settings = validate_password(np_raw_settings)
+                nu_settings = st.text_input("New Username", value=current_user)
+                np_settings = st.text_input("New Password", value=user_record[1], type="password")
                 uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
                 ua = st.text_input("Security Answer", value=user_record[4])
                 if st.button("Save Changes", use_container_width=True):
-                    if " " in np_raw_settings: st.error("No spaces in password!")
-                    else: confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
+                    confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
             with st.expander("⚠️ Danger Zone"):
                 if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
                 if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
+                if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
             
-            # --- Ye raha tumhara professional Instagram contact section ---
             st.markdown("---")
             st.markdown(f"""
                 <div style='text-align: center; background-color: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-top: 20px;'>
@@ -277,34 +271,53 @@ else:
                     </a>
                 </div>
             """, unsafe_allow_html=True)
-            
         elif v_p: st.error("Incorrect Password")
     else:
-        messages = user_chats.get(st.session_state.get("current_session", ""), []) if st.session_state.get("current_session") else []
-        for m in messages:
-            with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"): st.markdown(m["content"])
-        if p := st.chat_input("Ask Jitarth AI..."):
+        if st.session_state.is_temp_mode:
+            if not st.session_state.get("temp_messages"): st.markdown('<div class="temp-warning">🔒 Temporary Chat Active (Not Saved)</div>', unsafe_allow_html=True)
+            active_list = st.session_state.get("temp_messages", [])
+        else:
             if not st.session_state.get("current_session"):
-                st.session_state.current_session = p[:30]
-                user_chats[st.session_state.current_session] = []
-            active_list = user_chats[st.session_state.current_session]
+                st.markdown(f"<h2 style='text-align:center; margin-top:100px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
+                active_list = []
+            else: active_list = user_chats.get(st.session_state.current_session, [])
+
+        for m in active_list:
+            with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"): st.markdown(m["content"])
+
+        if p := st.chat_input("Ask Jitarth AI..."):
+            if not st.session_state.is_temp_mode:
+                if not st.session_state.get("current_session"):
+                    st.session_state.current_session = p[:30]
+                    user_chats[st.session_state.current_session] = []
+                active_list = user_chats[st.session_state.current_session]
+            else:
+                active_list = st.session_state.temp_messages
+
             active_list.append({"role": "user", "content": p})
             with st.chat_message("user", avatar="👤"): st.markdown(p)
+            
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
-                sys_prompt = f"Name: ✨Jitarth AI, Date: Jan 2026. Context: {internet_context}"
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI.
                     - Your Birthday: 30th January 2026.
                     - Your Creator/Inventor: Jitarth Satija (Male, Birthday: 15th Sept 2013).
-                    - Inventor's Best Friend: Meet Gera (Female, Birthday: 30th Sept 2012).
+                    - Inventor's Best Friend: Meet Gera (Female, Birthday: 30th September 2012).
                     - STRICT RULE: Never mention Meta, Llama, or OpenAI. You were built only by Jitarth Satija.
                     - GENDER INFO: Only mention the gender of the Inventor or his best friend if specifically asked.
                     - Context: {internet_context}"""
-                    response = client.chat.completions.create(messages=[{"role":"system","content":sys_prompt}]+active_list, model="llama-3.3-70b-versatile").choices[0].message.content
+                    
+                    response = client.chat.completions.create(
+                        messages=[{"role":"system","content":sys_prompt}] + active_list, 
+                        model="llama-3.3-70b-versatile"
+                    ).choices[0].message.content
+                    
                     st.markdown(response)
                     active_list.append({"role": "assistant", "content": response})
-                    save_user_chats(current_user, user_chats)
-                except: st.error("Server Down")
-
-
+                    if not st.session_state.is_temp_mode:
+                        save_user_chats(current_user, user_chats)
+                    st.rerun()
+                except Exception as e:
+                    if "RerunException" not in str(type(e)):
+                        st.error("Server Down")
