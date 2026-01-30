@@ -203,23 +203,30 @@ else:
     user_chats = json.loads(user_record[2])
 
     with st.sidebar:
-        h_col1, h_col2 = st.columns([0.2, 0.8])
-        with h_col1:
+        # Layout pehle jaisa: Logo upar, phir buttons
+        st.markdown('<div class="gemini-logo">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div>', unsafe_allow_html=True)
+        st.write("") # Spacer
+        
+        col_s1, col_s2 = st.columns([0.8, 0.2])
+        with col_s1:
+            if st.button("➕ New Chat", use_container_width=True):
+                st.session_state.show_settings = False
+                st.session_state.current_session = None
+                st.session_state.is_temp_mode = False
+                st.rerun()
+        with col_s2:
             if st.button("⚙️"):
                 st.session_state.show_settings = not st.session_state.show_settings
                 st.rerun()
-        with h_col2: st.markdown('<div class="gemini-logo">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div>', unsafe_allow_html=True)
-        if st.button("➕ New Chat", use_container_width=True):
-            st.session_state.show_settings = False
-            st.session_state.current_session = None
-            st.session_state.is_temp_mode = False
-            st.rerun()
+
         if st.button("🤫 Temporary Chat", use_container_width=True):
             st.session_state.show_settings = False
             st.session_state.is_temp_mode = True
             st.session_state.temp_messages = []
             st.rerun()
+            
         st.write("---")
+        st.caption("Recent Chats")
         for title in reversed(list(user_chats.keys())):
             if st.button(f"💬 {title[:20]}...", key=f"sb_{title}", use_container_width=True):
                 st.session_state.show_settings = False
@@ -284,15 +291,16 @@ else:
                 Context from Web: {internet_context}"""
 
                 try:
-                    response = client.chat.completions.create(
+                    response_obj = client.chat.completions.create(
                         messages=[{"role": "system", "content": sys_prompt}] + active_list, 
                         model="llama-3.3-70b-versatile"
-                    ).choices[0].message.content
+                    )
+                    response = response_obj.choices[0].message.content
                     st.markdown(response)
                     active_list.append({"role": "assistant", "content": response})
                     if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
                     st.rerun()
                 except Exception as e:
-                    # Error handling fixed so it doesn't trigger on successful rerun
+                    # Rerun handling to prevent "Server Down" false positive
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down. Try later.")
