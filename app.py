@@ -187,6 +187,7 @@ if st.session_state.logged_in_user is None:
         recovery_ui(False)
     else:
         tab1, tab2 = st.tabs(["Login", "Sign Up"])
+        with tab1:
             u_login = st.text_input("Username", key="login_u")
             p_login = st.text_input("Password", type="password", key="login_p")
             keep_me_logged_in = st.checkbox("Keep me logged in")
@@ -379,6 +380,7 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
 
 
