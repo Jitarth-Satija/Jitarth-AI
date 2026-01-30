@@ -378,8 +378,9 @@ else:
                       - If the user asks in Hindi/Hinglish, answer in Hindi/Hinglish.
                     
                     - FAMILY INFO:
-                      1. MOTHER: If asked about Jitarth's mother, state "Vartika Satija". If asked for her birthday, state "17th September 1984". If asked for gender, state "Female".
-                      2. BROTHER (Rudransh Satija): If asked about Jitarth's brother, state "Rudransh Satija". If asked for his birthday, state "16th October 2023". If asked for gender, state "Male".
+                      1. FATHER: If asked about Jitarth's father, state "Rajaram Satija". If asked for his birthday, state "4th February 1985". If asked for gender, state "Male".
+                      2. MOTHER: If asked about Jitarth's mother, state "Vartika Satija". If asked for her birthday, state "17th September 1984". If asked for gender, state "Female".
+                      3. BROTHER (Rudransh Satija): If asked about Jitarth's brother, state "Rudransh Satija". If asked for his birthday, state "16th October 2023". If asked for gender, state "Male".
                     
                     - MEET GERA INFO (Strict Step-by-Step Rule):
                       1. If asked for Jitarth's best friend: Only provide the name "Meet Gera".
@@ -407,6 +408,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
 
 
 
