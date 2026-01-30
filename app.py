@@ -342,8 +342,22 @@ else:
                         confirm_dialog("Delete history?", "delete_chats")
                     if st.button("❌ Delete Account Permanently", use_container_width=True): 
                         confirm_dialog("Delete account?", "delete_account")
-            elif v_p: 
+           elif v_p: 
                 st.error("Incorrect Password")
+
+            # --- Professional Instagram Footer ---
+            st.markdown("---")
+            st.markdown("""
+                <div style='text-align: center; background-color: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-top: 20px;'>
+                    <p style='color: #8e918f; font-size: 14px; margin-bottom: 8px;'>
+                        📲 For any queries or support, feel free to reach out
+                    </p>
+                    <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' 
+                       style='color: #4e7cfe; text-decoration: none; font-weight: 600; font-size: 16px;'>
+                       Follow & Contact: @jitarths_2013_js
+                    </a>
+                </div>
+            """, unsafe_allow_html=True)
     else:
         # Chat Interface Logic
         if st.session_state.is_temp_mode:
@@ -407,3 +421,4 @@ else:
                     st.rerun()
                 except Exception as e:
                     st.error("Bhai, Llama server slow hai, ek baar phir try karna!")
+
