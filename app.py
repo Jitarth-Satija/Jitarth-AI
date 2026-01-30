@@ -218,46 +218,46 @@ if st.session_state.logged_in_user is None:
     # Optimized Login Logo with fixed aspect and centered alignment
    st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="login-j">J</span>itarth A<span class="login-i">I</span> ✨</div></div>', unsafe_allow_html=True)
 # Niche wali line add kar do
-st.markdown("<p style='text-align:center; color:#8e918f; margin-top:-25px; margin-bottom:20px;'>Connect: <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color:#4e7cfe; text-decoration:none; font-weight:bold;'>@jitarths_2013_js</a></p>", unsafe_allow_html=True)
-    if st.session_state.get("forgot_mode"): recovery_ui(False)
-    else:
-        tab1, tab2 = st.tabs(["Login", "Sign Up"])
-        with tab1:
-            u_login = st.text_input("Username", key="login_u")
-            p_login = st.text_input("Password", type="password", key="login_p")
-            if st.button("Log In", use_container_width=True):
-                user = get_user_data(u_login)
-                if user and user[1] == p_login:
-                    st.session_state.logged_in_user = u_login
-                    cookie_manager.set('jitarth_user_cookie', u_login)
+    st.markdown("<p style='text-align:center; color:#8e918f; margin-top:-25px; margin-bottom:20px;'>Connect: <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color:#4e7cfe; text-decoration:none; font-weight:bold;'>@jitarths_2013_js</a></p>", unsafe_allow_html=True)
+        if st.session_state.get("forgot_mode"): recovery_ui(False)
+        else:
+            tab1, tab2 = st.tabs(["Login", "Sign Up"])
+            with tab1:
+                u_login = st.text_input("Username", key="login_u")
+                p_login = st.text_input("Password", type="password", key="login_p")
+                if st.button("Log In", use_container_width=True):
+                    user = get_user_data(u_login)
+                    if user and user[1] == p_login:
+                        st.session_state.logged_in_user = u_login
+                        cookie_manager.set('jitarth_user_cookie', u_login)
+                        st.rerun()
+                    else: st.error("Invalid Username or Password")
+                if st.button("Recover Password?", use_container_width=True):
+                    st.session_state.forgot_mode = True
                     st.rerun()
-                else: st.error("Invalid Username or Password")
-            if st.button("Recover Password?", use_container_width=True):
-                st.session_state.forgot_mode = True
-                st.rerun()
-        with tab2:
-            nu_val = st.session_state.suggested_un
-            nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u")
-            nu = validate_username(nu_raw)
-            st.write("Suggestions:")
-            cols = st.columns(3)
-            suggs = generate_suggestions(nu)
-            for i, s in enumerate(suggs):
-                if cols[i].button(s, key=f"sug_reg_{s}", use_container_width=True):
-                    st.session_state.suggested_un = s
-                    st.rerun()
-            np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p")
-            np = validate_password(np_raw)
-            sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
-            sa = st.text_input("Answer (Min 2 characters)")
-            if st.button("SIGN UP", use_container_width=True):
-                if get_user_data(nu): st.error("Username taken!")
-                elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
-                    if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
-                        st.success("Account Created!")
-                        st.session_state.suggested_un = ""
-                    else: st.error("Registration failed")
-                else: st.error("Check requirements")
+            with tab2:
+                nu_val = st.session_state.suggested_un
+                nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u")
+                nu = validate_username(nu_raw)
+                st.write("Suggestions:")
+                cols = st.columns(3)
+                suggs = generate_suggestions(nu)
+                for i, s in enumerate(suggs):
+                    if cols[i].button(s, key=f"sug_reg_{s}", use_container_width=True):
+                        st.session_state.suggested_un = s
+                        st.rerun()
+                np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p")
+                np = validate_password(np_raw)
+                sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
+                sa = st.text_input("Answer (Min 2 characters)")
+                if st.button("SIGN UP", use_container_width=True):
+                    if get_user_data(nu): st.error("Username taken!")
+                    elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
+                        if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
+                            st.success("Account Created!")
+                            st.session_state.suggested_un = ""
+                        else: st.error("Registration failed")
+                    else: st.error("Check requirements")
 else:
     current_user = st.session_state.logged_in_user
     user_record = get_user_data(current_user)
@@ -379,4 +379,5 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
 
