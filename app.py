@@ -197,7 +197,7 @@ if st.session_state.logged_in_user is None:
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
                     if keep_me_logged_in:
-                        cookie_manager.set('jitarth_user_cookie', u_login)
+                        cookie_manager.set('jitarth_user_cookie', u_login, key="login_cookie_final")
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password")
@@ -380,4 +380,5 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
+
 
