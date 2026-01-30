@@ -277,7 +277,8 @@ else:
                 st.rerun()
         with h_col2:
             st.markdown('<div class="gemini-logo">Jitarth A<span class="sidebar-i-fix">I</span> ✨</div>', unsafe_allow_html=True)
-            st.markdown('<a href="https://instagram.com/jitarth_satija" style="color: #8e918f; text-decoration: none; font-size: 13px;">Instagram ID - @jitarth_satija</a>', unsafe_allow_html=True)        
+            st.markdown('<a href="https://instagram.com/@jitarths_2013_js" style="color: #8e918f; text-decoration: none; font-size: 13px;">Instagram ID - jitarths_2013_js
+</a>', unsafe_allow_html=True)        
         st.write("") 
         if st.button("➕ New Chat", use_container_width=True):
             st.session_state.show_settings = False
@@ -414,5 +415,6 @@ else:
                     st.rerun()
                 except Exception as e:
                     st.error("Jitarth AI's Server Is Down. Please Try Again Later")
+
 
 
