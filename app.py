@@ -189,7 +189,9 @@ if st.session_state.logged_in_user is None:
     
     if st.session_state.get("forgot_mode"): 
         recovery_ui(False)
-    with tab1:
+    else:
+        tab1, tab2 = st.tabs(["Login", "Sign Up"])
+        with tab1:
             u_login = st.text_input("Username", key="login_u")
             p_login = st.text_input("Password", type="password", key="login_p")
             
@@ -197,16 +199,9 @@ if st.session_state.logged_in_user is None:
                 user = get_user_data(u_login)
                 if user and user[1] == p_login:
                     st.session_state.logged_in_user = u_login
-                    st.rerun()
-                else:
-                    st.error("Invalid Username or Password")
-            
-            if st.button("Recover Password?", use_container_width=True, key="login_recovery_btn"):
-                st.session_state.forgot_mode = True
-                st.rerun()
-                    st.error("Invalid Username or Password")
-                        expiry = datetime.now() + timedelta(days=30)
-                        cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry, key="login_success_cookie")
+                    # Yahan hum toggle ke bina hi cookie set kar rahe hain taaki login rahe
+                    expiry = datetime.now() + timedelta(days=30)
+                    cookie_manager.set('jitarth_user_cookie', u_login, expires_at=expiry, key="login_success_cookie")
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password")
@@ -389,5 +384,3 @@ else:
                 if not st.session_state.is_temp_mode: 
                     save_user_chats(current_user, user_chats)
                 st.rerun()
-
-
