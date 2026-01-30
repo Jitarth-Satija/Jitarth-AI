@@ -5,14 +5,13 @@ from groq import Groq
 import os
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Jitarth AI", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Jitarth AI Pro", page_icon="🛡️", layout="centered")
 
 # --- API SETUP ---
-try:
-    api_key = st.secrets["GROQ_API_KEY"]
-except Exception:
-    api_key = os.getenv("GROQ_API_KEY")
-
+api_key = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
+if not api_key:
+    st.error("🚨 API Key missing in Secrets!")
+    st.stop()
 client = Groq(api_key=api_key)
 
 # --- DATABASE SETUP ---
@@ -22,7 +21,9 @@ def init_db():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             username TEXT PRIMARY KEY,
-            password TEXT
+            password TEXT,
+            security_question TEXT,
+            answer TEXT
         )
     """)
     conn.commit()
@@ -33,108 +34,103 @@ conn = init_db()
 def make_hashes(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
-def check_hashes(password, hashed_text):
-    if make_hashes(password) == hashed_text:
-        return hashed_text
-    return False
-
-def add_userdata(username, password):
+def add_userdata(username, password, q, a):
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO users(username, password) VALUES (?,?)", (username, password))
+    cursor.execute("INSERT INTO users(username, password, security_question, answer) VALUES (?,?,?,?)", 
+                   (username, make_hashes(password), q, make_hashes(a.lower())))
     conn.commit()
 
 def login_user(username, password):
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username =? AND password =?", (username, password))
-    data = cursor.fetchall()
-    return data
+    cursor.execute("SELECT * FROM users WHERE username =? AND password =?", (username, make_hashes(password)))
+    return cursor.fetchall()
 
-# --- SESSION STATE (The "Keep Logged In" Engine) ---
+def recover_password(username, q, a):
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username =? AND security_question =? AND answer =?", 
+                   (username, q, make_hashes(a.lower())))
+    return cursor.fetchall()
+
+# --- SESSION STATE ---
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-if "username" not in st.session_state:
-    st.session_state.username = ""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # --- UI ---
-st.title("🤖 Jitarth AI")
+st.title("🤖 Jitarth AI Pro")
 
 if not st.session_state.logged_in:
-    menu = ["Login", "SignUp"]
-    choice = st.sidebar.selectbox("Menu", menu)
+    menu = ["Login", "Sign Up", "Forgot Password"]
+    choice = st.sidebar.selectbox("Access Control", menu)
 
     if choice == "Login":
-        st.subheader("Login Section")
-        username = st.text_input("User Name")
-        password = st.text_input("Password", type='password')
-        
-        # Keep me logged in checkbox (visual/logic placeholder)
-        keep_me_logged_in = st.checkbox("Keep me logged in")
-        
+        st.subheader("Login to your AI")
+        u = st.text_input("Username")
+        p = st.text_input("Password", type='password')
         if st.button("Login"):
-            hashed_pswd = make_hashes(password)
-            result = login_user(username, check_hashes(password, hashed_pswd))
-            if result:
+            if login_user(u, p):
                 st.session_state.logged_in = True
-                st.session_state.username = username
-                # If checked, session state remains active during the current browser session
-                st.success(f"Welcome {username}!")
+                st.session_state.username = u
+                st.success(f"Welcome back, {u}!")
                 st.rerun()
             else:
-                st.error("Invalid Username/Password")
+                st.error("Galat hai bhai! Username ya Password check karo.")
 
-    elif choice == "SignUp":
+    elif choice == "Sign Up":
         st.subheader("Create New Account")
-        new_user = st.text_input("Username")
-        new_password = st.text_input("Password", type='password')
-        if st.button("Signup"):
-            try:
-                add_userdata(new_user, make_hashes(new_password))
-                st.success("Account Created! Please Login.")
-            except sqlite3.IntegrityError:
-                st.error("Username already exists!")
+        new_u = st.text_input("Choose Username (Min 4 chars)")
+        new_p = st.text_input("Choose Password (Min 6 chars)", type='password')
+        q = st.selectbox("Security Question", ["Your birth city?", "First pet name?", "Favorite teacher?"])
+        a = st.text_input("Your Answer")
+        
+        if st.button("Register"):
+            if len(new_u) < 4:
+                st.warning("Username kam se kam 4 characters ka hona chahiye!")
+            elif len(new_p) < 6:
+                st.warning("Password kam se kam 6 characters ka hona chahiye!")
+            elif not a:
+                st.warning("Security answer zaroori hai!")
+            else:
+                try:
+                    add_userdata(new_u, new_p, q, a)
+                    st.success("Account ban gaya! Ab Login tab mein jao.")
+                except:
+                    st.error("Ye Username pehle se koi le chuka hai.")
+
+    elif choice == "Forgot Password":
+        st.subheader("Recover Account")
+        ru = st.text_input("Enter Username")
+        rq = st.selectbox("Your Security Question", ["Your birth city?", "First pet name?", "Favorite teacher?"])
+        ra = st.text_input("Your Answer")
+        if st.button("Show my Password"):
+            if recover_password(ru, rq, ra):
+                st.info("Identity Verified! Please set a new password via Database (Feature coming soon). For now, contact admin.")
+            else:
+                st.error("Details match nahi kar rahi!")
 
 else:
-    # --- LOGGED IN AREA ---
-    st.sidebar.write(f"Logged in as: **{st.session_state.username}**")
-    
-    # Sidebar features
-    if st.sidebar.button("Clear Chat"):
-        st.session_state.messages = []
-        st.rerun()
-
+    # --- CHAT INTERFACE ---
+    st.sidebar.info(f"User: {st.session_state.username}")
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
-        st.session_state.username = ""
         st.rerun()
 
-    # Chat Interface
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    for m in st.session_state.messages:
+        with st.chat_message(m["role"]):
+            st.markdown(m["content"])
 
-    if prompt := st.chat_input("Ask Jitarth AI anything..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
+    if p := st.chat_input("Ask Jitarth AI..."):
+        st.session_state.messages.append({"role": "user", "content": p})
+        with st.chat_message("user"): st.markdown(p)
+        
         with st.chat_message("assistant"):
             try:
-                # Using the latest powerful llama model
-                completion = client.chat.completions.create(
+                resp = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
-                    messages=[
-                        {"role": "system", "content": "You are Jitarth AI, a helpful and witty assistant created by Jitarth Satija."},
-                        *st.session_state.messages
-                    ],
-                )
-                response = completion.choices[0].message.content
-                st.markdown(response)
-                st.session_state.messages.append({"role": "assistant", "content": response})
+                    messages=[{"role": "system", "content": "You are Jitarth AI, created by Jitarth Satija."}] + st.session_state.messages
+                ).choices[0].message.content
+                st.markdown(resp)
+                st.session_state.messages.append({"role": "assistant", "content": resp})
             except Exception as e:
-                # Specific check for API key issues
-                if "Authentication" in str(e):
-                    st.error("Groq API Key Error! Check your Streamlit Secrets.")
-                else:
-                    st.error(f"Error: {e}")
+                st.error(f"Error: {e}")
