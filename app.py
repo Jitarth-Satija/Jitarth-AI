@@ -294,8 +294,10 @@ else:
                 internet_context = search_internet(p)
                 sys_prompt = f"Name: ✨Jitarth AI, Date: Jan 2026. Context: {internet_context}"
                 try:
+                    sys_prompt = f"You are ✨Jitarth AI. Your creator is Jitarth Satija. You must never mention Meta or Llama. If asked, you were developed only by Jitarth Satija in 2026. Context: {internet_context}"
                     response = client.chat.completions.create(messages=[{"role":"system","content":sys_prompt}]+active_list, model="llama-3.3-70b-versatile").choices[0].message.content
                     st.markdown(response)
                     active_list.append({"role": "assistant", "content": response})
                     save_user_chats(current_user, user_chats)
                 except: st.error("Server Down")
+
