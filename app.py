@@ -471,4 +471,4 @@ else:
                     st.rerun()
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
-                        st.error("✨ Jitarth AI is busy. Please try again.")
+                        st.error("✨ Jitarth AI is currently busy or experiencing a connection issue. Please try again in a moment.")
