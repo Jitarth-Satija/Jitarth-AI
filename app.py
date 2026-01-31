@@ -45,20 +45,17 @@ SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favouri
 
 # Input Validation Helpers
 def validate_username(u):
-    # Rule: Max 1 '@', Max 1 '_', Max 2 spaces. Rest alphanumeric.
     if u.count('@') > 1 or u.count('_') > 1 or u.count(' ') > 2:
-        return "" # Invalid
-    # Remove any characters that aren't letters, numbers, @, _, or space
+        return "" 
     valid_u = re.sub(r'[^a-zA-Z0-9 @_]', '', u)
-    if valid_u != u: return "" # If any extra special char found, invalidate
+    if valid_u != u: return "" 
     return valid_u[:20] 
 
 def validate_password(p):
-    # Rule: NO @, NO _, NO spaces. Only letters and numbers.
     if "@" in p or "_" in p or " " in p:
-        return "" # Invalid
+        return "" 
     valid_p = re.sub(r'[^a-zA-Z0-9]', '', p)
-    if valid_p != p: return "" # If any special char found, invalidate
+    if valid_p != p: return "" 
     return valid_p[:10] 
 
 def generate_suggestions(base_u):
@@ -132,7 +129,6 @@ st.markdown("""
         font-family: 'monospace';
     }
 
-    /* Red helper text for validation */
     .validation-text {
         color: #ff4b4b;
         font-size: 0.8rem;
@@ -205,6 +201,7 @@ def confirm_dialog(message, action_type, data=None):
         elif action_type == "update_profile":
             if update_user_credentials(*data): 
                 st.session_state.logged_in_user = data[1]
+                st.session_state.show_settings = False
             else: st.error("Error updating profile")
         st.rerun()
     if cols[1].button("No, Cancel", use_container_width=True): st.rerun()
@@ -232,6 +229,7 @@ if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = N
 if "is_temp_mode" not in st.session_state: st.session_state.is_temp_mode = False
 if "show_settings" not in st.session_state: st.session_state.show_settings = False
 if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
+if "settings_recover_mode" not in st.session_state: st.session_state.settings_recover_mode = False
 
 # Master Cookie Login
 saved_user = cookie_manager.get('jitarth_user_cookie')
@@ -265,7 +263,6 @@ if st.session_state.logged_in_user is None:
             nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u", max_chars=20)
             nu = validate_username(nu_raw)
             
-            # Validation UI logic
             if nu_raw and nu == "":
                 st.markdown('<p class="validation-text">Invalid Format! (Max: 1 @, 1 _, 2 spaces)</p>', unsafe_allow_html=True)
             elif len(nu_raw) < 5:
@@ -316,6 +313,7 @@ else:
         with h_col1:
             if st.button("⚙️"):
                 st.session_state.show_settings = not st.session_state.show_settings
+                st.session_state.settings_recover_mode = False
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
             
@@ -346,35 +344,57 @@ else:
         st.markdown("<div style='text-align: center;'><p style='margin-bottom: 5px; font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p><a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: bold;'>@jitarths_2013_js</a></div>", unsafe_allow_html=True)
 
     if st.session_state.show_settings:
-        st.title("⚙️ Account Settings")
-        v_p = st.text_input("Enter Password to Unlock Settings", type="password")
-        if v_p == user_record[1]:
-            st.success("Settings Unlocked ✅")
-            with st.expander("👤 Update Profile Information", expanded=True):
-                nu_settings_raw = st.text_input("New Username", value=current_user, max_chars=20)
-                np_settings_raw = st.text_input("New Password", value=user_record[1], type="password", max_chars=10)
-                
-                # Validation for settings
-                nu_s = validate_username(nu_settings_raw)
-                np_s = validate_password(np_settings_raw)
-                
-                uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
-                ua = st.text_input("Security Answer", value=user_record[4], type="password")
-                
-                if st.button("Save Changes", use_container_width=True):
-                    if nu_s == "":
-                        st.error("Invalid Username Format! (Max: 1 @, 1 _, 2 spaces)")
-                    elif np_s == "":
-                        st.error("Invalid Password! No @, _, or spaces allowed.")
-                    elif len(nu_settings_raw) < 5 or len(np_settings_raw) < 4:
-                        st.error("Username (min 5) or Password (min 4) too short!")
+        if st.session_state.settings_recover_mode:
+            recovery_ui(True)
+        else:
+            st.title("⚙️ Account Settings")
+            v_p = st.text_input("Enter Password to Unlock Settings", type="password")
+            
+            col_rec1, col_rec2 = st.columns([0.3, 0.7])
+            with col_rec1:
+                if st.button("Recover Password?", key="set_rec"):
+                    st.session_state.settings_recover_mode = True
+                    st.rerun()
+
+            if v_p == user_record[1]:
+                st.success("Settings Unlocked ✅")
+                with st.expander("👤 Update Profile Information", expanded=True):
+                    nu_settings_raw = st.text_input("New Username", value=current_user, max_chars=20)
+                    nu_s = validate_username(nu_settings_raw)
+                    if nu_settings_raw and nu_s == "":
+                        st.markdown('<p class="validation-text">Invalid Format! (Max: 1 @, 1 _, 2 spaces)</p>', unsafe_allow_html=True)
+                    elif len(nu_settings_raw) < 5:
+                        st.markdown(f'<p class="validation-text">Needs {5-len(nu_settings_raw)} more characters</p>', unsafe_allow_html=True)
                     else:
-                        confirm_dialog("Update details?", "update_profile", (current_user, nu_s, np_s, SECURITY_QUESTIONS.index(uq), ua))
-            with st.expander("⚠️ Danger Zone"):
-                if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
-                if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
-                if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
-        elif v_p: st.error("Incorrect Password")
+                        st.markdown('<p class="valid-ok">Username Format OK ✅</p>', unsafe_allow_html=True)
+
+                    np_settings_raw = st.text_input("New Password", value=user_record[1], type="password", max_chars=10)
+                    np_s = validate_password(np_settings_raw)
+                    if np_settings_raw and np_s == "":
+                        st.markdown('<p class="validation-text">No @, _, or spaces allowed!</p>', unsafe_allow_html=True)
+                    elif len(np_settings_raw) < 4:
+                        st.markdown(f'<p class="validation-text">Needs {4-len(np_settings_raw)} more characters</p>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<p class="valid-ok">Password Format OK ✅</p>', unsafe_allow_html=True)
+                    
+                    uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
+                    ua = st.text_input("Security Answer", value=user_record[4], type="password")
+                    if len(ua) < 2:
+                        st.markdown(f'<p class="validation-text">Needs {2-len(ua)} more characters</p>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<p class="valid-ok">Security Pass OK ✅</p>', unsafe_allow_html=True)
+                    
+                    if st.button("Save Changes", use_container_width=True):
+                        if nu_s != "" and np_s != "" and len(nu_settings_raw) >= 5 and len(np_settings_raw) >= 4 and len(ua) >= 2:
+                            confirm_dialog("Update details?", "update_profile", (current_user, nu_s, np_s, SECURITY_QUESTIONS.index(uq), ua))
+                        else:
+                            st.error("Please meet all requirements highlighted in red")
+                            
+                with st.expander("⚠️ Danger Zone"):
+                    if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
+                    if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
+                    if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
+            elif v_p: st.error("Incorrect Password")
     else:
         if st.session_state.is_temp_mode:
             if not st.session_state.get("temp_messages"): st.markdown('<div class="temp-warning">🔒 Temporary Chat Active (Not Saved)</div>', unsafe_allow_html=True)
