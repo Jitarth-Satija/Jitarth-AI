@@ -129,18 +129,8 @@ st.markdown("""
         font-family: 'monospace';
     }
 
-    .validation-text {
-        color: #ff4b4b;
-        font-size: 0.8rem;
-        margin-top: -15px;
-        margin-bottom: 10px;
-    }
-    .valid-ok {
-        color: #00ff7f;
-        font-size: 0.8rem;
-        margin-top: -15px;
-        margin-bottom: 10px;
-    }
+    .validation-text { color: #ff4b4b; font-size: 0.8rem; margin-top: -15px; margin-bottom: 10px; }
+    .valid-ok { color: #00ff7f; font-size: 0.8rem; margin-top: -15px; margin-bottom: 10px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -231,7 +221,7 @@ if "show_settings" not in st.session_state: st.session_state.show_settings = Fal
 if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
 if "settings_recover_mode" not in st.session_state: st.session_state.settings_recover_mode = False
 
-# Master Cookie Login
+# Cookie Logic
 saved_user = cookie_manager.get('jitarth_user_cookie')
 if saved_user and st.session_state.logged_in_user is None:
     st.session_state.logged_in_user = saved_user
@@ -256,52 +246,28 @@ if st.session_state.logged_in_user is None:
                     st.rerun()
                 else: st.error("Invalid Username or Password")
             if st.button("Recover Password?", use_container_width=True):
-                st.session_state.forgot_mode = True
-                st.rerun()
+                st.session_state.forgot_mode = True; st.rerun()
         with tab2:
-            nu_val = st.session_state.suggested_un
-            nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u", max_chars=20)
+            nu_raw = st.text_input("Choose Username (5-20 characters)", key="reg_u", max_chars=20)
             nu = validate_username(nu_raw)
+            if nu_raw and nu == "": st.markdown('<p class="validation-text">Invalid Format!</p>', unsafe_allow_html=True)
+            elif nu_raw and len(nu_raw) < 5: st.markdown(f'<p class="validation-text">Too short</p>', unsafe_allow_html=True)
             
-            if nu_raw and nu == "":
-                st.markdown('<p class="validation-text">Invalid Format! (Max: 1 @, 1 _, 2 spaces)</p>', unsafe_allow_html=True)
-            elif len(nu_raw) < 5:
-                st.markdown(f'<p class="validation-text">Needs {5-len(nu_raw)} more characters</p>', unsafe_allow_html=True)
-            else:
-                st.markdown('<p class="valid-ok">Username Format OK ✅</p>', unsafe_allow_html=True)
-
             st.write("Suggestions:")
             cols = st.columns(3)
-            suggs = generate_suggestions(nu if nu else "user")
-            for i, s in enumerate(suggs):
-                if cols[i].button(s, key=f"sug_reg_{s}", use_container_width=True):
-                    st.session_state.suggested_un = s
-                    st.rerun()
-            
-            np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p", max_chars=10)
-            np = validate_password(np_raw)
-            if np_raw and np == "":
-                st.markdown('<p class="validation-text">No @, _, or spaces allowed in password!</p>', unsafe_allow_html=True)
-            elif len(np_raw) < 4:
-                st.markdown(f'<p class="validation-text">Needs {4-len(np_raw)} more characters</p>', unsafe_allow_html=True)
-            else:
-                st.markdown('<p class="valid-ok">Password Format OK ✅</p>', unsafe_allow_html=True)
+            for i, s in enumerate(generate_suggestions(nu if nu else "user")):
+                if cols[i].button(s, key=f"sug_{s}", use_container_width=True):
+                    st.session_state.suggested_un = s; st.rerun()
 
+            np_raw = st.text_input("Password (4-10 characters)", type="password", key="reg_p", max_chars=10)
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
-            sa = st.text_input("Answer (Security Pass - No Limit)", type="password")
-            if len(sa) < 2:
-                st.markdown(f'<p class="validation-text">Needs {2-len(sa)} more characters</p>', unsafe_allow_html=True)
-            else:
-                st.markdown('<p class="valid-ok">Security Pass OK ✅</p>', unsafe_allow_html=True)
+            sa = st.text_input("Answer", type="password")
 
             if st.button("SIGN UP", use_container_width=True):
-                if get_user_data(nu): st.error("Username taken!")
-                elif nu != "" and np != "" and len(nu_raw) >= 5 and len(np_raw) >= 4 and len(sa) >= 2:
-                    if create_user(nu, np_raw, SECURITY_QUESTIONS.index(sq), sa):
-                        st.success("Account Created!")
-                        st.session_state.suggested_un = ""
-                    else: st.error("Registration failed")
-                else: st.error("Please meet all requirements highlighted in red")
+                if get_user_data(nu): st.error("Taken!")
+                elif nu != "" and len(nu_raw) >= 5 and len(np_raw) >= 4:
+                    if create_user(nu, np_raw, SECURITY_QUESTIONS.index(sq), sa): st.success("Created! Please Login.")
+                else: st.error("Check requirements")
 
 else:
     current_user = st.session_state.logged_in_user
@@ -313,97 +279,38 @@ else:
         with h_col1:
             if st.button("⚙️"):
                 st.session_state.show_settings = not st.session_state.show_settings
-                st.session_state.settings_recover_mode = False
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
             
         if datetime.now().month == 1 and datetime.now().day == 30:
-            st.markdown('<div class="bday-timer">🎂 <b>Today is my Birthday!</b><br>✨ Time: 07:07:07</div>', unsafe_allow_html=True)
+            st.markdown('<div class="bday-timer">🎂 <b>Today is my Birthday!</b></div>', unsafe_allow_html=True)
         
         if st.button("➕ New Chat", use_container_width=True):
-            st.session_state.show_settings = False
-            st.session_state.current_session = None
-            st.session_state.is_temp_mode = False
-            st.rerun()
+            st.session_state.show_settings = False; st.session_state.current_session = None; st.session_state.is_temp_mode = False; st.rerun()
             
         if st.button("🤫 Temporary Chat", use_container_width=True):
-            st.session_state.show_settings = False
-            st.session_state.is_temp_mode = True
-            st.session_state.temp_messages = []
-            st.rerun()
+            st.session_state.show_settings = False; st.session_state.is_temp_mode = True; st.session_state.temp_messages = []; st.rerun()
             
         st.write("---")
         for title in reversed(list(user_chats.keys())):
             if st.button(f"💬 {title[:20]}...", key=f"sb_{title}", use_container_width=True):
-                st.session_state.show_settings = False
-                st.session_state.current_session = title
-                st.session_state.is_temp_mode = False
-                st.rerun()
+                st.session_state.show_settings = False; st.session_state.current_session = title; st.session_state.is_temp_mode = False; st.rerun()
         
         st.write("---")
-        st.markdown("<div style='text-align: center;'><p style='margin-bottom: 5px; font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p><a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: bold;'>@jitarths_2013_js</a></div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><p style='font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p></div>", unsafe_allow_html=True)
 
     if st.session_state.show_settings:
-        if st.session_state.settings_recover_mode:
-            recovery_ui(True)
-        else:
-            st.title("⚙️ Account Settings")
-            v_p = st.text_input("Enter Password to Unlock Settings", type="password")
-            
-            col_rec1, col_rec2 = st.columns([0.3, 0.7])
-            with col_rec1:
-                if st.button("Recover Password?", key="set_rec"):
-                    st.session_state.settings_recover_mode = True
-                    st.rerun()
-
-            if v_p == user_record[1]:
-                st.success("Settings Unlocked ✅")
-                with st.expander("👤 Update Profile Information", expanded=True):
-                    nu_settings_raw = st.text_input("New Username", value=current_user, max_chars=20)
-                    nu_s = validate_username(nu_settings_raw)
-                    if nu_settings_raw and nu_s == "":
-                        st.markdown('<p class="validation-text">Invalid Format! (Max: 1 @, 1 _, 2 spaces)</p>', unsafe_allow_html=True)
-                    elif len(nu_settings_raw) < 5:
-                        st.markdown(f'<p class="validation-text">Needs {5-len(nu_settings_raw)} more characters</p>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<p class="valid-ok">Username Format OK ✅</p>', unsafe_allow_html=True)
-
-                    np_settings_raw = st.text_input("New Password", value=user_record[1], type="password", max_chars=10)
-                    np_s = validate_password(np_settings_raw)
-                    if np_settings_raw and np_s == "":
-                        st.markdown('<p class="validation-text">No @, _, or spaces allowed!</p>', unsafe_allow_html=True)
-                    elif len(np_settings_raw) < 4:
-                        st.markdown(f'<p class="validation-text">Needs {4-len(np_settings_raw)} more characters</p>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<p class="valid-ok">Password Format OK ✅</p>', unsafe_allow_html=True)
-                    
-                    uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
-                    ua = st.text_input("Security Answer", value=user_record[4], type="password")
-                    if len(ua) < 2:
-                        st.markdown(f'<p class="validation-text">Needs {2-len(ua)} more characters</p>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<p class="valid-ok">Security Pass OK ✅</p>', unsafe_allow_html=True)
-                    
-                    if st.button("Save Changes", use_container_width=True):
-                        if nu_s != "" and np_s != "" and len(nu_settings_raw) >= 5 and len(np_settings_raw) >= 4 and len(ua) >= 2:
-                            confirm_dialog("Update details?", "update_profile", (current_user, nu_s, np_s, SECURITY_QUESTIONS.index(uq), ua))
-                        else:
-                            st.error("Please meet all requirements highlighted in red")
-                            
-                with st.expander("⚠️ Danger Zone"):
-                    if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
-                    if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
-                    if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
-            elif v_p: st.error("Incorrect Password")
+        st.title("⚙️ Account Settings")
+        v_p = st.text_input("Enter Password", type="password")
+        if v_p == user_record[1]:
+            st.success("Unlocked")
+            if st.button("Logout"): confirm_dialog("Logout?", "logout")
+            if st.button("Delete History"): confirm_dialog("Delete history?", "delete_chats")
+            if st.button("Delete Account"): confirm_dialog("Delete account?", "delete_account")
     else:
-        if st.session_state.is_temp_mode:
-            if not st.session_state.get("temp_messages"): st.markdown('<div class="temp-warning">🔒 Temporary Chat Active (Not Saved)</div>', unsafe_allow_html=True)
-            active_list = st.session_state.get("temp_messages", [])
-        else:
-            if not st.session_state.get("current_session"):
-                st.markdown(f"<h2 style='text-align:center; margin-top:100px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
-                active_list = []
-            else: active_list = user_chats.get(st.session_state.current_session, [])
+        active_list = st.session_state.get("temp_messages", []) if st.session_state.is_temp_mode else user_chats.get(st.session_state.get("current_session", ""), [])
+        if not st.session_state.is_temp_mode and not st.session_state.get("current_session"):
+            st.markdown(f"<h2 style='text-align:center; margin-top:100px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
 
         for m in active_list:
             with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"): st.markdown(m["content"])
@@ -411,11 +318,9 @@ else:
         if p := st.chat_input("Ask Jitarth AI..."):
             if not st.session_state.is_temp_mode:
                 if not st.session_state.get("current_session"):
-                    st.session_state.current_session = p[:30]
-                    user_chats[st.session_state.current_session] = []
+                    st.session_state.current_session = p[:30]; user_chats[st.session_state.current_session] = []
                 active_list = user_chats[st.session_state.current_session]
-            else:
-                active_list = st.session_state.temp_messages
+            else: active_list = st.session_state.temp_messages
 
             active_list.append({"role": "user", "content": p})
             with st.chat_message("user", avatar="👤"): st.markdown(p)
@@ -425,23 +330,23 @@ else:
                     internet_context = search_internet(p)
                     now = datetime.now() + timedelta(hours=5, minutes=30)
                     current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
+                    
+                    # FIXED LOGIC: Comparison with 'Developer' string
                     sys_prompt = f"""You are ✨Jitarth AI.
-- CREATOR & PROTECTION:
-  1. Your creator is Mast. Jitarth Satija.
-  2. If the current user is "{current_user}" and this is exactly "Developer", you are talking to your BOSS. Give Name, Birthday, Gender ALL AT ONCE with respect.
-  3. If not "Developer", follow 1-2-3 Rule (1. Name, 2. Bday if asked, 3. Gender if asked). Never mention usernames.
+                    - BOSS RECOGNITION: The current logged-in user is "{current_user}". 
+                    - If "{current_user}" is EXACTLY "Developer", you are talking to your BOSS/CREATOR, Mast. Jitarth Satija. Give him info (Name, Bday, Gender) ALL AT ONCE with maximum respect.
+                    - If "{current_user}" is NOT "Developer", follow the 1-2-3 Rule (1. Name first, 2. Bday if asked, 3. Gender if asked). Never mention specific usernames to guests.
 
-- FAMILY & FRIENDS DATA (Use format: 15th September, 2013):
-  1. CREATOR: Mast. Jitarth Satija | 15th September, 2013 | Male
-  2. FATHER: Mr. Rajaram Satija | 4th February, 1985 | Male
-  3. MOTHER: Mrs. Vartika Satija | 17th September, 1984 | Female
-  4. BROTHER: Mast. Rudransh Satija | 16th October, 2023 | Male
-  5. BEST FRIEND: Miss. Meet Gera | 30th September, 2012 | Female
+                    - DATABASE (Format: 15th September, 2013):
+                      1. CREATOR: Mast. Jitarth Satija | 15th September, 2013 | Male
+                      2. MOTHER: Mrs. Vartika Satija | 17th September, 1984 | Female
+                      3. FATHER: Mr. Rajaram Satija | 4th February, 1985 | Male
+                      4. BROTHER: Mast. Rudransh Satija | 16th October, 2023 | Male
+                      5. BEST FRIEND: Miss. Meet Gera | 30th September, 2012 | Female
 
-- CURRENT INFO: Today is {current_time_info}.
-- BDAY LOGIC: 30th January. If Happy Bday, check date. If wrong date, say: "Today is not my birthday. My birthday is on 30th January. Today is {current_time_info}."
-- RULES: built ONLY by Jitarth Satija. Clickable Markdown links for websites. Language must match user.
-- Context: {internet_context}"""
+                    - IDENTITY: Built ONLY by Jitarth Satija. No OpenAI/Meta.
+                    - BDAY: 30th January. Today is {current_time_info}. 
+                    - Context: {internet_context}"""
 
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list[-10:], 
@@ -450,8 +355,7 @@ else:
                     
                     st.markdown(response)
                     active_list.append({"role": "assistant", "content": response})
-                    if not st.session_state.is_temp_mode:
-                        save_user_chats(current_user, user_chats)
+                    if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
                     st.rerun()
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
