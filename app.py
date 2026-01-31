@@ -426,7 +426,6 @@ else:
                 current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
                 
                 try:
-                    try:
                     sys_prompt = f"""You are ✨Jitarth AI.
                     - CURRENT INFO: Today is {current_time_info}. (Use this for all date/day/time questions).
                     - KNOWLEDGE: Your knowledge is up-to-date. Never say it ends in 2023.
@@ -475,5 +474,6 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
 
 
