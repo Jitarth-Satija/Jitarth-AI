@@ -423,13 +423,6 @@ else:
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
                 now = datetime.now()
-                # %A se Day ka naam aayega, %d %B se Date
-                current_time_str = now.strftime("%A, %d %B %Y, %I:%M:%S %p")
-                try:
-                    with st.chat_message("assistant", avatar="✨"):
-                # Ab ye lines 'with' ke andar hain (Indented)
-                internet_context = search_internet(p)
-                now = datetime.now()
                 current_time_info = now.strftime("%A, %d %B %Y, %I:%M:%S %p")
                 
                 try:
@@ -475,21 +468,3 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
-                    
-                    response = client.chat.completions.create(
-                        messages=[{"role":"system","content":sys_prompt}] + active_list, 
-                        model="llama-3.3-70b-versatile"
-                    ).choices[0].message.content
-                    
-                    st.markdown(response)
-                    active_list.append({"role": "assistant", "content": response})
-                    if not st.session_state.is_temp_mode:
-                        save_user_chats(current_user, user_chats)
-                    st.rerun()
-                except Exception as e:
-                    if "RerunException" not in str(type(e)): st.error("Server Down")
-
-
-
-
-
