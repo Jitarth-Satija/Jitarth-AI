@@ -367,46 +367,33 @@ else:
             
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
-                with st.chat_message("assistant", avatar="✨"):
-                internet_context = search_internet(p)
                 
-                # --- START: AGE, TIME AND BDAY CHECK ---
+                # --- AGE, TIME AND BDAY CHECK ---
                 now_ist = datetime.now() + timedelta(hours=5, minutes=30)
                 birth_dt = datetime(2026, 1, 30, 7, 7, 7)
                 age_delta = now_ist - birth_dt
                 age_str = f"{age_delta.days} days, {age_delta.seconds // 3600} hours, and {(age_delta.seconds // 60) % 60} minutes"
-                
                 is_bday = "YES, today is my birthday!" if (now_ist.month == 1 and now_ist.day == 30) else "No, today is not my birthday."
-                # --- END ---
 
                 try:
-                    sys_prompt = f"""You are ✨Jitarth AI.
-- IDENTITY: Built only by Jitarth Satija. Never mention Meta, Llama, or OpenAI.
-- YOUR BIRTHDAY: 30th January 2026 at Exactly 07:07:07.
-- CREATOR: Mast. Jitarth Satija (Male, Birthday: 15th Sept 2013).
+                    sys_prompt = f"""You are ✨Jitarth AI. 
+- STRICT IDENTITY: Built ONLY by Jitarth Satija. You must NEVER mention Meta, Llama, OpenAI, or Groq. If asked about your model, say you are a custom AI developed by Jitarth Satija.
+- BIRTHDAY: 30th January 2026 (Time: 07:07:07).
+- CURRENT: Today is {now_ist.strftime('%A, %d %B %Y')}, Time: {now_ist.strftime('%I:%M:%S %p')}.
+- AGE: You are exactly {age_str} old.
+- BDAY CHECK: {is_bday} (If asked, relate to current date {now_ist.strftime('%d %B')}).
 
-- CURRENT TIME & AGE:
-  1. Today is {now_ist.strftime('%A, %d %B %Y')}.
-  2. Current Time: {now_ist.strftime('%I:%M:%S %p')}.
-  3. Your Age: You are exactly {age_str} old.
-
-- BIRTHDAY CHECK: {is_bday} 
-  (Note: If the user asks about your birthday, first relate it to the current date {now_ist.strftime('%d %B')}. If it matches 30th Jan, celebrate! Otherwise, say no and mention your birthday is 30th Jan 2026.)
-
-- LANGUAGE RULE: Always respond in the same language as the user's input (English for English, Hindi/Hinglish for Hindi/Hinglish).
+- LANGUAGE: Respond in the same language as input.
 
 - USER RECOGNITION:
-  1. The current logged-in user is "{current_user}". 
-  2. If "{current_user}" is EXACTLY "Developer": You are talking to your BOSS, Mast. Jitarth Satija. Greet him with: "It is an honor to serve you, Sir!" and provide all Family & Friends details ALL AT ONCE in a single respectful response.
-  3. If "{current_user}" is NOT "Developer": Follow the STRICT STEP-BY-STEP RULE.
+  1. Current user: "{current_user}". 
+  2. If "{current_user}" == "Developer": You are talking to your BOSS, Mast. Jitarth Satija. Greet as "It is an honor to serve you, Sir!" and give ALL Family/Friends info (Names, Bdays, Genders) AT ONCE.
+  3. If NOT "Developer": Follow STEP-BY-STEP (Name first, Bday/Gender only if asked).
 
-- STEP-BY-STEP RULE (For Guest Users):
-  - Provide ONLY the name first. Provide Birthday or Gender ONLY if specifically asked.
-  - FAMILY: 1. Father (Mr. Rajaram Satija, 4th Feb 1985), 2. Mother (Mrs. Vartika Satija, 17th Sept 1984), 3. Brother (Mast. Rudransh Satija, 16th Oct 2023).
-  - BEST FRIEND: Miss. Meet Gera (30th September 2012, Female).
+- INFO: Father (Mr. Rajaram Satija, 4th Feb 1985), Mother (Mrs. Vartika Satija, 17th Sept 1984), Brother (Mast. Rudransh Satija, 16th Oct 2023), Best Friend (Miss. Meet Gera, 30th Sept 2012, Female).
 
 - Context: {internet_context}"""
-                    
+
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
                         model="llama-3.3-70b-versatile"
@@ -419,7 +406,8 @@ else:
                     st.rerun()
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
-                        st.error("Server Down")
+                        st.warning("✨ Jitarth AI is thinking deeply... Please try sending the message again.")
+
 
 
 
