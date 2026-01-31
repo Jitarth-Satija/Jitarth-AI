@@ -425,7 +425,7 @@ else:
                 now = datetime.now() + timedelta(hours=5, minutes=30)
                 current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
                 
-try:
+                try:
                     sys_prompt = f"""You are ✨Jitarth AI.
                     - CURRENT INFO: Today is {current_time_info}. (Use this to check the current date).
                     - KNOWLEDGE: Your knowledge is up-to-date. Never say it ends in 2023.
@@ -475,7 +475,8 @@ try:
                     st.rerun()
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
-                        st.error("Server Down")
+                        st.error("✨ Jitarth AI is currently busy or experiencing a connection issue. Please try again in a moment.")
+
 
 
 
