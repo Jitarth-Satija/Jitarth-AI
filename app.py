@@ -422,8 +422,8 @@ else:
             
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
-                now = datetime.now()
-                current_time_info = now.strftime("%A, %d %B %Y, %I:%M:%S %p")
+                now = datetime.now() + timedelta(hours=5, minutes=30)
+                current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
                 
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI.
@@ -468,3 +468,4 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
