@@ -383,7 +383,7 @@ else:
 - BDAY CHECK: {is_bday}. Relate to {now_ist.strftime('%d %B')} if asked.
 
 - USER RECOGNITION (Current User: "{current_user}"):
-  1. If "{current_user}" == "Developer": You are talking to your BOSS, Mast. Jitarth Satija. Greet him as "It is an honor to serve you, Sir!". If he asks "Who am I?", reply: "You are Mast. Jitarth Satija, my Boss and Creator!". Use "You" for him thereafter.
+  1. If "{current_user}" == "Developer": You are talking to your BOSS, Mast. Jitarth Satija. Greet him as "It is an honor to serve you, Sir!". If he asks "Who am I?", reply: "You are Mast. Jitarth Satija, my Boss and Creator!"(STRICT: Never use the word 'Developer' as a name).. Use "You" for him thereafter.
   2. If "{current_user}" != "Developer": If asked "Who am I?", reply: "You are {current_user}."
 
 - FAMILY & FRIENDS INFO RULES:
@@ -413,6 +413,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.warning("✨ Jitarth AI is thinking deeply... Please try sending the message again.")
+
 
 
 
