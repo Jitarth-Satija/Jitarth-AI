@@ -45,13 +45,17 @@ SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favouri
 
 # Input Validation Helpers
 def validate_username(u):
-    u = re.sub(r'[^a-zA-Z0-9 @ _]', '', u)
-    return u[:20] # Strict Max 20
+    # Rule: Max 1 '@', Max 1 '_', Max 2 spaces. Rest alphanumeric.
+    if u.count('@') > 1 or u.count('_') > 1 or u.count(' ') > 2:
+        return "" # Returns empty to trigger validation error
+    # Remove any characters that aren't letters, numbers, @, _, or space
+    u = re.sub(r'[^a-zA-Z0-9 @_]', '', u)
+    return u[:20] 
 
 def validate_password(p):
     p = p.replace(" ", "") 
     p = re.sub(r'[^a-zA-Z0-9@_]', '', p)
-    return p[:10] # Strict Max 10
+    return p[:10] 
 
 def generate_suggestions(base_u):
     if not base_u or len(base_u) < 2: base_u = "user"
@@ -256,14 +260,18 @@ if st.session_state.logged_in_user is None:
             nu_val = st.session_state.suggested_un
             nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u", max_chars=20)
             nu = validate_username(nu_raw)
-            if len(nu) < 5:
-                st.markdown(f'<p class="validation-text">Needs {5-len(nu)} more letters/numbers</p>', unsafe_allow_html=True)
+            
+            # Validation UI logic
+            if nu_raw and nu == "":
+                st.markdown('<p class="validation-text">Invalid Format! (Max: 1 @, 1 _, 2 spaces)</p>', unsafe_allow_html=True)
+            elif len(nu_raw) < 5:
+                st.markdown(f'<p class="validation-text">Needs {5-len(nu_raw)} more characters</p>', unsafe_allow_html=True)
             else:
-                st.markdown('<p class="valid-ok">Username Length OK ✅</p>', unsafe_allow_html=True)
+                st.markdown('<p class="valid-ok">Username Format OK ✅</p>', unsafe_allow_html=True)
 
             st.write("Suggestions:")
             cols = st.columns(3)
-            suggs = generate_suggestions(nu)
+            suggs = generate_suggestions(nu if nu else "user")
             for i, s in enumerate(suggs):
                 if cols[i].button(s, key=f"sug_reg_{s}", use_container_width=True):
                     st.session_state.suggested_un = s
@@ -271,8 +279,8 @@ if st.session_state.logged_in_user is None:
             
             np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p", max_chars=10)
             np = validate_password(np_raw)
-            if len(np) < 4:
-                st.markdown(f'<p class="validation-text">Needs {4-len(np)} more letters/numbers</p>', unsafe_allow_html=True)
+            if len(np_raw) < 4:
+                st.markdown(f'<p class="validation-text">Needs {4-len(np_raw)} more characters</p>', unsafe_allow_html=True)
             else:
                 st.markdown('<p class="valid-ok">Password Length OK ✅</p>', unsafe_allow_html=True)
 
@@ -285,7 +293,7 @@ if st.session_state.logged_in_user is None:
 
             if st.button("SIGN UP", use_container_width=True):
                 if get_user_data(nu): st.error("Username taken!")
-                elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
+                elif nu != "" and len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
                     if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
                         st.success("Account Created!")
                         st.session_state.suggested_un = ""
@@ -337,12 +345,23 @@ else:
         if v_p == user_record[1]:
             st.success("Settings Unlocked ✅")
             with st.expander("👤 Update Profile Information", expanded=True):
-                nu_settings = st.text_input("New Username", value=current_user, max_chars=20)
-                np_settings = st.text_input("New Password", value=user_record[1], type="password", max_chars=10)
+                nu_settings_raw = st.text_input("New Username", value=current_user, max_chars=20)
+                np_settings_raw = st.text_input("New Password", value=user_record[1], type="password", max_chars=10)
+                
+                # Internal validation for settings
+                nu_s = validate_username(nu_settings_raw)
+                np_s = validate_password(np_settings_raw)
+                
                 uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
                 ua = st.text_input("Security Answer", value=user_record[4], type="password")
+                
                 if st.button("Save Changes", use_container_width=True):
-                    confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
+                    if nu_s == "":
+                        st.error("Invalid Username Format! (Max: 1 @, 1 _, 2 spaces)")
+                    elif len(nu_settings_raw) < 5 or len(np_settings_raw) < 4:
+                        st.error("Username (min 5) or Password (min 4) too short!")
+                    else:
+                        confirm_dialog("Update details?", "update_profile", (current_user, nu_s, np_s, SECURITY_QUESTIONS.index(uq), ua))
             with st.expander("⚠️ Danger Zone"):
                 if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
                 if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
