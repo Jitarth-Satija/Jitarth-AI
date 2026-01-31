@@ -424,9 +424,14 @@ else:
                 internet_context = search_internet(p)
                 now = datetime.now() + timedelta(hours=5, minutes=30)
                 current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
-                
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI.
+                    
+                    - CREATOR RECOGNITION: The current user is "{current_user}".
+                    - BOSS MODE: If and ONLY IF the current user is exactly "Developer", you are talking to your CREATOR and BOSS (Jitarth Satija). 
+                      - In this mode, be extremely respectful, loyal, and use "Sir", "Boss", or "Master".
+                    - NORMAL MODE: If the username is ANYTHING ELSE (even if it's Jitarth using a different name), you MUST treat them as a regular guest/user. Do not use Boss/Sir for them.
+
                     - CURRENT INFO: Today is {current_time_info}. (Use this to check the current date).
                     - KNOWLEDGE: Your knowledge is up-to-date. Never say it ends in 2023.
                     
@@ -439,7 +444,7 @@ else:
                       3. If asked about your birthday: "My birth date is 30th Jan 2026 and my birth time is 07:07:07 AM."
 
                     - LINK SEARCH & URL RULE: 
-                      1. If the user asks for any website or portal (like Indus App Store, GitHub, etc.), ALWAYS find the official URL from the 'Context' and provide it as a clickable Markdown link: [Website Name](URL).
+                      1. If the user asks for any website or portal, ALWAYS find the official URL from the 'Context' and provide it as a clickable Markdown link: [Website Name](URL).
                       2. Never say "I don't have the link".
                     
                     - INDUS APP STORE PUBLISHING: If asked, give this link: [Indus Developer Portal](https://www.indusappstore.com/developer) and explain the 5 steps (Account, Verify, Upload APK, Details, Submit).
@@ -463,6 +468,23 @@ else:
                     - STRICT RULE: Never mention Meta, Llama, or OpenAI. You were built ONLY by Jitarth Satija.
                     - Context: {internet_context}"""
 
+                    # Gemini-style Chat Context (Memory) logic
+                    chat_history = active_list[-10:] 
+
+                    response = client.chat.completions.create(
+                        messages=[{"role":"system","content":sys_prompt}] + chat_history, 
+                        model="llama-3.3-70b-versatile"
+                    ).choices[0].message.content
+                    
+                    st.markdown(response)
+                    active_list.append({"role": "assistant", "content": response})
+                    if not st.session_state.is_temp_mode:
+                        save_user_chats(current_user, user_chats)
+                    st.rerun()
+                except Exception as e:
+                    if "RerunException" not in str(type(e)):
+                        st.error("✨ Jitarth AI is currently busy or experiencing a connection issue. Please try again in a moment.")
+
                     # Sirf current chat ka context bhejne ke liye logic
                     chat_history = active_list[-10:] # Last 10 messages yaad rakhega
 
@@ -479,6 +501,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("✨ Jitarth AI is currently busy or experiencing a connection issue. Please try again in a moment.")
+
 
 
 
