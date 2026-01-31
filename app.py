@@ -47,15 +47,19 @@ SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favouri
 def validate_username(u):
     # Rule: Max 1 '@', Max 1 '_', Max 2 spaces. Rest alphanumeric.
     if u.count('@') > 1 or u.count('_') > 1 or u.count(' ') > 2:
-        return "" # Returns empty to trigger validation error
+        return "" # Invalid
     # Remove any characters that aren't letters, numbers, @, _, or space
-    u = re.sub(r'[^a-zA-Z0-9 @_]', '', u)
-    return u[:20] 
+    valid_u = re.sub(r'[^a-zA-Z0-9 @_]', '', u)
+    if valid_u != u: return "" # If any extra special char found, invalidate
+    return valid_u[:20] 
 
 def validate_password(p):
-    p = p.replace(" ", "") 
-    p = re.sub(r'[^a-zA-Z0-9@_]', '', p)
-    return p[:10] 
+    # Rule: NO @, NO _, NO spaces. Only letters and numbers.
+    if "@" in p or "_" in p or " " in p:
+        return "" # Invalid
+    valid_p = re.sub(r'[^a-zA-Z0-9]', '', p)
+    if valid_p != p: return "" # If any special char found, invalidate
+    return valid_p[:10] 
 
 def generate_suggestions(base_u):
     if not base_u or len(base_u) < 2: base_u = "user"
@@ -279,10 +283,12 @@ if st.session_state.logged_in_user is None:
             
             np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p", max_chars=10)
             np = validate_password(np_raw)
-            if len(np_raw) < 4:
+            if np_raw and np == "":
+                st.markdown('<p class="validation-text">No @, _, or spaces allowed in password!</p>', unsafe_allow_html=True)
+            elif len(np_raw) < 4:
                 st.markdown(f'<p class="validation-text">Needs {4-len(np_raw)} more characters</p>', unsafe_allow_html=True)
             else:
-                st.markdown('<p class="valid-ok">Password Length OK ✅</p>', unsafe_allow_html=True)
+                st.markdown('<p class="valid-ok">Password Format OK ✅</p>', unsafe_allow_html=True)
 
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
             sa = st.text_input("Answer (Security Pass - No Limit)", type="password")
@@ -293,7 +299,7 @@ if st.session_state.logged_in_user is None:
 
             if st.button("SIGN UP", use_container_width=True):
                 if get_user_data(nu): st.error("Username taken!")
-                elif nu != "" and len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
+                elif nu != "" and np != "" and len(nu_raw) >= 5 and len(np_raw) >= 4 and len(sa) >= 2:
                     if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
                         st.success("Account Created!")
                         st.session_state.suggested_un = ""
@@ -348,7 +354,7 @@ else:
                 nu_settings_raw = st.text_input("New Username", value=current_user, max_chars=20)
                 np_settings_raw = st.text_input("New Password", value=user_record[1], type="password", max_chars=10)
                 
-                # Internal validation for settings
+                # Validation for settings
                 nu_s = validate_username(nu_settings_raw)
                 np_s = validate_password(np_settings_raw)
                 
@@ -358,6 +364,8 @@ else:
                 if st.button("Save Changes", use_container_width=True):
                     if nu_s == "":
                         st.error("Invalid Username Format! (Max: 1 @, 1 _, 2 spaces)")
+                    elif np_s == "":
+                        st.error("Invalid Password! No @, _, or spaces allowed.")
                     elif len(nu_settings_raw) < 5 or len(np_settings_raw) < 4:
                         st.error("Username (min 5) or Password (min 4) too short!")
                     else:
