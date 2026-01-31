@@ -73,7 +73,6 @@ st.markdown("""
     .stApp { background-color: #131314; color: #e3e3e3; }
     [data-testid="stSidebar"] { background-color: #1e1f20 !important; border-right: 1px solid #3c4043; }
     
-    /* LOGO GLOBAL STYLES */
     .gemini-logo { 
         font-family: 'Google Sans', sans-serif; 
         font-size: 32px; 
@@ -87,11 +86,9 @@ st.markdown("""
         letter-spacing: -0.5px;
     }
 
-    /* J and I size adjustments */
     .logo-j { font-size: 44px; line-height: 0; margin-right: -2px; }
     .i-fix { font-size: 32px; font-weight: 700; } 
     
-    /* Login Screen Logo Specifics */
     .login-logo-container { 
         text-align: center; 
         margin-top: 50px; 
@@ -116,11 +113,6 @@ st.markdown("""
     .temp-warning { background-color: rgba(255, 75, 75, 0.1); border: 1px solid #ff4b4b; color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
     footer {visibility: hidden;}
     
-    /* Sidebar Row Alignment */
-    [data-testid="column"] {
-        display: flex;
-        align-items: center;
-        }
     .bday-timer {
         text-align: center;
         background: rgba(78, 124, 254, 0.1);
@@ -131,9 +123,22 @@ st.markdown("""
         color: #4e7cfe;
         font-family: 'monospace';
     }
+
+    /* Red helper text for validation */
+    .validation-text {
+        color: #ff4b4b;
+        font-size: 0.8rem;
+        margin-top: -15px;
+        margin-bottom: 10px;
+    }
+    .valid-ok {
+        color: #00ff7f;
+        font-size: 0.8rem;
+        margin-top: -15px;
+        margin-bottom: 10px;
+    }
     </style>
     """, unsafe_allow_html=True)
-        
 
 # 5. Database Functions
 def get_user_data(username):
@@ -179,19 +184,15 @@ def confirm_dialog(message, action_type, data=None):
     cols = st.columns(2)
     if cols[0].button("Yes, Proceed", use_container_width=True, type="primary"):
         if action_type == "logout":
-            try:
-                cookie_manager.delete('jitarth_user_cookie')
-            except:
-                pass
+            try: cookie_manager.delete('jitarth_user_cookie')
+            except: pass
             st.session_state.logged_in_user = None
         elif action_type == "delete_chats": 
             save_user_chats(st.session_state.logged_in_user, {})
         elif action_type == "delete_account": 
             delete_user_account(st.session_state.logged_in_user)
-            try:
-                cookie_manager.delete('jitarth_user_cookie')
-            except:
-                pass
+            try: cookie_manager.delete('jitarth_user_cookie')
+            except: pass
             st.session_state.logged_in_user = None
         elif action_type == "update_profile":
             if update_user_credentials(*data): 
@@ -233,7 +234,6 @@ if saved_user and st.session_state.logged_in_user is None:
 # Login Screen
 if st.session_state.logged_in_user is None:
     st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="login-j">J</span>itarth A<span class="login-i">I</span> ✨</div></div>', unsafe_allow_html=True)
-    # Instagram Link on Login Screen
     st.markdown("<p style='text-align:center; color:#8e918f; margin-top:-25px; margin-bottom:20px;'>Connect: <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color:#4e7cfe; text-decoration:none; font-weight:bold;'>@jitarths_2013_js</a></p>", unsafe_allow_html=True)
     
     if st.session_state.get("forgot_mode"): recovery_ui(False)
@@ -256,6 +256,12 @@ if st.session_state.logged_in_user is None:
             nu_val = st.session_state.suggested_un
             nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u")
             nu = validate_username(nu_raw)
+            # Username Validation Message
+            if len(nu) < 5:
+                st.markdown(f'<p class="validation-text">Needs {5-len(nu)} more characters</p>', unsafe_allow_html=True)
+            else:
+                st.markdown('<p class="valid-ok">Username Length OK ✅</p>', unsafe_allow_html=True)
+
             st.write("Suggestions:")
             cols = st.columns(3)
             suggs = generate_suggestions(nu)
@@ -263,10 +269,23 @@ if st.session_state.logged_in_user is None:
                 if cols[i].button(s, key=f"sug_reg_{s}", use_container_width=True):
                     st.session_state.suggested_un = s
                     st.rerun()
+            
             np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p")
             np = validate_password(np_raw)
+            # Password Validation Message
+            if len(np) < 4:
+                st.markdown(f'<p class="validation-text">Needs {4-len(np)} more characters</p>', unsafe_allow_html=True)
+            else:
+                st.markdown('<p class="valid-ok">Password Length OK ✅</p>', unsafe_allow_html=True)
+
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
-            sa = st.text_input("Answer (Min 2 characters)")
+            sa = st.text_input("Answer (Min 2 characters)", type="password") # Security Answer hidden
+            # Answer Validation Message
+            if len(sa) < 2:
+                st.markdown(f'<p class="validation-text">Needs {2-len(sa)} more characters</p>', unsafe_allow_html=True)
+            else:
+                st.markdown('<p class="valid-ok">Answer Length OK ✅</p>', unsafe_allow_html=True)
+
             if st.button("SIGN UP", use_container_width=True):
                 if get_user_data(nu): st.error("Username taken!")
                 elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
@@ -274,7 +293,8 @@ if st.session_state.logged_in_user is None:
                         st.success("Account Created!")
                         st.session_state.suggested_un = ""
                     else: st.error("Registration failed")
-                else: st.error("Check requirements")
+                else: st.error("Please meet all requirements highlighted in red")
+
 else:
     current_user = st.session_state.logged_in_user
     user_record = get_user_data(current_user)
@@ -288,7 +308,6 @@ else:
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
             
-        # Sirf aaj (30 Jan) ke liye birthday timer
         if datetime.now().month == 1 and datetime.now().day == 30:
             st.markdown('<div class="bday-timer">🎂 <b>Today is my Birthday!</b><br>✨ Time: 07:07:07</div>', unsafe_allow_html=True)
         
@@ -312,16 +331,8 @@ else:
                 st.session_state.is_temp_mode = False
                 st.rerun()
         
-        # Sidebar Instagram Link
         st.write("---")
-        st.markdown("""
-            <div style='text-align: center;'>
-                <p style='margin-bottom: 5px; font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p>
-                <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: bold;'>
-                    @jitarths_2013_js
-                </a>
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center;'><p style='margin-bottom: 5px; font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p><a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: bold;'>@jitarths_2013_js</a></div>", unsafe_allow_html=True)
 
     if st.session_state.show_settings:
         st.title("⚙️ Account Settings")
@@ -332,7 +343,7 @@ else:
                 nu_settings = st.text_input("New Username", value=current_user)
                 np_settings = st.text_input("New Password", value=user_record[1], type="password")
                 uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
-                ua = st.text_input("Security Answer", value=user_record[4])
+                ua = st.text_input("Security Answer", value=user_record[4], type="password")
                 if st.button("Save Changes", use_container_width=True):
                     confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
             with st.expander("⚠️ Danger Zone"):
@@ -368,8 +379,6 @@ else:
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
                 try:
-                    # --- NAYA SYSTEM PROMPT YAHAN SE ---
-                    # --- UPDATED SYSTEM PROMPT ---
                     sys_prompt = f"""You are ✨Jitarth AI.
                     - YOUR BIRTHDAY: 30th January 2026.
                     - BIRTH TIME: Exactly 07:07:07 AM.
@@ -395,7 +404,6 @@ else:
                     - STRICT PRIVACY: Never mention family or friends unless specifically asked.
                     - STRICT RULE: Never mention Meta, Llama, or OpenAI. You were built only by Jitarth Satija.
                     - Context: {internet_context}"""
-                    # --- UPDATED SYSTEM PROMPT END ---
                     
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
@@ -408,6 +416,4 @@ else:
                         save_user_chats(current_user, user_chats)
                     st.rerun()
                 except Exception as e:
-                    if "RerunException" not in str(type(e)):
-                        st.error("Server Down")
-
+                    if "RerunException" not in str(type(e)): st.error("Server Down")
