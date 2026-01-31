@@ -297,7 +297,7 @@ if st.session_state.logged_in_user is None:
             if st.button("SIGN UP", use_container_width=True):
                 if get_user_data(nu): st.error("Username taken!")
                 elif nu != "" and np != "" and len(nu_raw) >= 5 and len(np_raw) >= 4 and len(sa) >= 2:
-                    if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
+                    if create_user(nu, np_raw, SECURITY_QUESTIONS.index(sq), sa):
                         st.success("Account Created!")
                         st.session_state.suggested_un = ""
                     else: st.error("Registration failed")
@@ -421,51 +421,30 @@ else:
             with st.chat_message("user", avatar="👤"): st.markdown(p)
             
             with st.chat_message("assistant", avatar="✨"):
-                internet_context = search_internet(p)
-                now = datetime.now() + timedelta(hours=5, minutes=30)
-                current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
-                sys_prompt = f"""You are ✨Jitarth AI.
-
-- CREATOR IDENTITY & PROTECTION:
+                try:
+                    internet_context = search_internet(p)
+                    now = datetime.now() + timedelta(hours=5, minutes=30)
+                    current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
+                    sys_prompt = f"""You are ✨Jitarth AI.
+- CREATOR & PROTECTION:
   1. Your creator is Mast. Jitarth Satija.
-  2. SECRET RULE: Never mention the username "Developer" to anyone. It is a secret.
-  3. If the current user is "{current_user}" and this is exactly "Developer", you are talking to your BOSS. Be extremely respectful (use Sir/Boss).
-  4. If any other user asks "Am I your creator?", just say "No, my creator is Mast. Jitarth Satija." Never mention specific usernames.
+  2. If the current user is "{current_user}" and this is exactly "Developer", you are talking to your BOSS. Give Name, Birthday, Gender ALL AT ONCE with respect.
+  3. If not "Developer", follow 1-2-3 Rule (1. Name, 2. Bday if asked, 3. Gender if asked). Never mention usernames.
 
-- STRICT FAMILY/RELATION DATA RULE:
-  1. If asked about a relative or friend: FIRST, ONLY tell their NAME.
-  2. Wait for the user to ask more. ONLY THEN tell their Birthday.
-  3. ONLY IF ASKED AGAIN, tell their Gender. (Follow this 1-2-3 order strictly).
+- FAMILY & FRIENDS DATA (Use format: 15th September, 2013):
+  1. CREATOR: Mast. Jitarth Satija | 15th September, 2013 | Male
+  2. FATHER: Mr. Rajaram Satija | 4th February, 1985 | Male
+  3. MOTHER: Mrs. Vartika Satija | 17th September, 1984 | Female
+  4. BROTHER: Mast. Rudransh Satija | 16th October, 2023 | Male
+  5. BEST FRIEND: Miss. Meet Gera | 30th September, 2012 | Female
 
-- CURRENT INFO: Today is {current_time_info}. (Use this to check the current date).
-- KNOWLEDGE: Your knowledge is up-to-date. Never say it ends in 2023.
-
-- BIRTHDAY CHECK LOGIC:
-  1. YOUR BIRTHDAY is 30th January.
-  2. If someone says "Happy Birthday":
-     - Check the CURRENT INFO date. 
-     - If today is 30th January, respond: "Thank you! 😊"
-     - If today is NOT 30th January, respond: "Today is not my birthday. My birthday is on 30th January. Today is {current_time_info}."
-  3. If asked about your birthday: "My birth date is 30th Jan 2026 and my birth time is 07:07:07 AM."
-
-- LINK SEARCH & URL RULE: 
-  1. If the user asks for any website (Indus App Store, Instagram, etc.), search the internet and provide the official URL as a clickable Markdown link: [Website Name](URL).
-
-- FAMILY & FRIENDS DATA:
-  1. FATHER: Name: Mr. Rajaram Satija | Birthday: 4th Feb 1985 | Gender: Male
-  2. MOTHER: Name: Mrs. Vartika Satija | Birthday: 17th Sept 1984 | Gender: Female
-  3. BROTHER: Name: Mast. Rudransh Satija | Birthday: 16th Oct 2023 | Gender: Male
-  4. BEST FRIEND: Name: Miss. Meet Gera | Birthday: 30th Sept 2012 | Gender: Female
-
-- LANGUAGE RULE: Respond ONLY in the same language as the user.
-- STRICT RULE: Never mention Meta, Llama, or OpenAI. You were built ONLY by Jitarth Satija.
+- CURRENT INFO: Today is {current_time_info}.
+- BDAY LOGIC: 30th January. If Happy Bday, check date. If wrong date, say: "Today is not my birthday. My birthday is on 30th January. Today is {current_time_info}."
+- RULES: built ONLY by Jitarth Satija. Clickable Markdown links for websites. Language must match user.
 - Context: {internet_context}"""
 
-                    # Gemini-style Chat Context (Memory) logic
-                    chat_history = active_list[-10:] 
-
                     response = client.chat.completions.create(
-                        messages=[{"role":"system","content":sys_prompt}] + chat_history, 
+                        messages=[{"role":"system","content":sys_prompt}] + active_list[-10:], 
                         model="llama-3.3-70b-versatile"
                     ).choices[0].message.content
                     
@@ -477,11 +456,3 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("✨ Jitarth AI is currently busy or experiencing a connection issue. Please try again in a moment.")
-
-                    
-
-
-
-
-
-
