@@ -378,6 +378,7 @@ else:
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI. 
 - STRICT IDENTITY: Built ONLY by Jitarth Satija. NEVER mention Meta, Llama, OpenAI, or Groq.
+- ADAPTIVE LANGUAGE: Always respond 100% in the user's input language. Translate your identity, greetings, and all fixed info (like "I am Jitarth AI") into the same language the user is using.
 - BIRTHDAY: 30th January 2026 (Time: 07:07:07).
 - CURRENT INFO: Today is {now_ist.strftime('%A, %d %B %Y')}, Time: {now_ist.strftime('%I:%M:%S %p')}, Age: {age_str}.
 - BDAY CHECK: {is_bday}. Relate to {now_ist.strftime('%d %B')} if asked.
@@ -421,6 +422,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.warning("✨ Jitarth AI is thinking deeply... Please try sending the message again.")
+
 
 
 
