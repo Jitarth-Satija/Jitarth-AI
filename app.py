@@ -368,9 +368,6 @@ else:
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
                 try:
-                    with st.chat_message("assistant", avatar="✨"):
-                        internet_context = search_internet(p)
-                try:
                     # --- NAYA SYSTEM PROMPT YAHAN SE ---
                     sys_prompt = f"""You are ✨Jitarth AI.
                     - YOUR BIRTHDAY: 30th January 2026.
@@ -397,7 +394,6 @@ else:
                     - Context: {internet_context}"""
                     # --- NAYA SYSTEM PROMPT YAHAN TAK ---
                     
-                    
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
                         model="llama-3.3-70b-versatile"
@@ -411,17 +407,3 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
