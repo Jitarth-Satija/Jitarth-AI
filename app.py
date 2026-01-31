@@ -45,18 +45,13 @@ SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favouri
 
 # Input Validation Helpers
 def validate_username(u):
-    if u.count('@') > 1 or u.count('_') > 1 or u.count(' ') > 2:
-        return "" 
-    valid_u = re.sub(r'[^a-zA-Z0-9 @_]', '', u)
-    if valid_u != u: return "" 
-    return valid_u[:20] 
+    u = re.sub(r'[^a-zA-Z0-9 @ _]', '', u)
+    return u[:20]
 
 def validate_password(p):
-    if "@" in p or "_" in p or " " in p:
-        return "" 
-    valid_p = re.sub(r'[^a-zA-Z0-9]', '', p)
-    if valid_p != p: return "" 
-    return valid_p[:10] 
+    p = p.replace(" ", "") 
+    p = re.sub(r'[^a-zA-Z0-9@_]', '', p)
+    return p[:10]
 
 def generate_suggestions(base_u):
     if not base_u or len(base_u) < 2: base_u = "user"
@@ -78,6 +73,7 @@ st.markdown("""
     .stApp { background-color: #131314; color: #e3e3e3; }
     [data-testid="stSidebar"] { background-color: #1e1f20 !important; border-right: 1px solid #3c4043; }
     
+    /* LOGO GLOBAL STYLES */
     .gemini-logo { 
         font-family: 'Google Sans', sans-serif; 
         font-size: 32px; 
@@ -91,9 +87,11 @@ st.markdown("""
         letter-spacing: -0.5px;
     }
 
+    /* J and I size adjustments */
     .logo-j { font-size: 44px; line-height: 0; margin-right: -2px; }
     .i-fix { font-size: 32px; font-weight: 700; } 
     
+    /* Login Screen Logo Specifics */
     .login-logo-container { 
         text-align: center; 
         margin-top: 50px; 
@@ -118,6 +116,11 @@ st.markdown("""
     .temp-warning { background-color: rgba(255, 75, 75, 0.1); border: 1px solid #ff4b4b; color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
     footer {visibility: hidden;}
     
+    /* Sidebar Row Alignment */
+    [data-testid="column"] {
+        display: flex;
+        align-items: center;
+        }
     .bday-timer {
         text-align: center;
         background: rgba(78, 124, 254, 0.1);
@@ -128,11 +131,9 @@ st.markdown("""
         color: #4e7cfe;
         font-family: 'monospace';
     }
-
-    .validation-text { color: #ff4b4b; font-size: 0.8rem; margin-top: -15px; margin-bottom: 10px; }
-    .valid-ok { color: #00ff7f; font-size: 0.8rem; margin-top: -15px; margin-bottom: 10px; }
     </style>
     """, unsafe_allow_html=True)
+        
 
 # 5. Database Functions
 def get_user_data(username):
@@ -178,20 +179,23 @@ def confirm_dialog(message, action_type, data=None):
     cols = st.columns(2)
     if cols[0].button("Yes, Proceed", use_container_width=True, type="primary"):
         if action_type == "logout":
-            try: cookie_manager.delete('jitarth_user_cookie')
-            except: pass
+            try:
+                cookie_manager.delete('jitarth_user_cookie')
+            except:
+                pass
             st.session_state.logged_in_user = None
         elif action_type == "delete_chats": 
             save_user_chats(st.session_state.logged_in_user, {})
         elif action_type == "delete_account": 
             delete_user_account(st.session_state.logged_in_user)
-            try: cookie_manager.delete('jitarth_user_cookie')
-            except: pass
+            try:
+                cookie_manager.delete('jitarth_user_cookie')
+            except:
+                pass
             st.session_state.logged_in_user = None
         elif action_type == "update_profile":
             if update_user_credentials(*data): 
                 st.session_state.logged_in_user = data[1]
-                st.session_state.show_settings = False
             else: st.error("Error updating profile")
         st.rerun()
     if cols[1].button("No, Cancel", use_container_width=True): st.rerun()
@@ -219,9 +223,8 @@ if "logged_in_user" not in st.session_state: st.session_state.logged_in_user = N
 if "is_temp_mode" not in st.session_state: st.session_state.is_temp_mode = False
 if "show_settings" not in st.session_state: st.session_state.show_settings = False
 if "suggested_un" not in st.session_state: st.session_state.suggested_un = ""
-if "settings_recover_mode" not in st.session_state: st.session_state.settings_recover_mode = False
 
-# Cookie Logic
+# Master Cookie Login
 saved_user = cookie_manager.get('jitarth_user_cookie')
 if saved_user and st.session_state.logged_in_user is None:
     st.session_state.logged_in_user = saved_user
@@ -230,6 +233,7 @@ if saved_user and st.session_state.logged_in_user is None:
 # Login Screen
 if st.session_state.logged_in_user is None:
     st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="login-j">J</span>itarth A<span class="login-i">I</span> ✨</div></div>', unsafe_allow_html=True)
+    # Instagram Link on Login Screen
     st.markdown("<p style='text-align:center; color:#8e918f; margin-top:-25px; margin-bottom:20px;'>Connect: <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color:#4e7cfe; text-decoration:none; font-weight:bold;'>@jitarths_2013_js</a></p>", unsafe_allow_html=True)
     
     if st.session_state.get("forgot_mode"): recovery_ui(False)
@@ -246,29 +250,31 @@ if st.session_state.logged_in_user is None:
                     st.rerun()
                 else: st.error("Invalid Username or Password")
             if st.button("Recover Password?", use_container_width=True):
-                st.session_state.forgot_mode = True; st.rerun()
+                st.session_state.forgot_mode = True
+                st.rerun()
         with tab2:
-            nu_raw = st.text_input("Choose Username (5-20 characters)", key="reg_u", max_chars=20)
+            nu_val = st.session_state.suggested_un
+            nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u")
             nu = validate_username(nu_raw)
-            if nu_raw and nu == "": st.markdown('<p class="validation-text">Invalid Format!</p>', unsafe_allow_html=True)
-            elif nu_raw and len(nu_raw) < 5: st.markdown(f'<p class="validation-text">Too short</p>', unsafe_allow_html=True)
-            
             st.write("Suggestions:")
             cols = st.columns(3)
-            for i, s in enumerate(generate_suggestions(nu if nu else "user")):
-                if cols[i].button(s, key=f"sug_{s}", use_container_width=True):
-                    st.session_state.suggested_un = s; st.rerun()
-
-            np_raw = st.text_input("Password (4-10 characters)", type="password", key="reg_p", max_chars=10)
+            suggs = generate_suggestions(nu)
+            for i, s in enumerate(suggs):
+                if cols[i].button(s, key=f"sug_reg_{s}", use_container_width=True):
+                    st.session_state.suggested_un = s
+                    st.rerun()
+            np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p")
+            np = validate_password(np_raw)
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
-            sa = st.text_input("Answer", type="password")
-
+            sa = st.text_input("Answer (Min 2 characters)")
             if st.button("SIGN UP", use_container_width=True):
-                if get_user_data(nu): st.error("Taken!")
-                elif nu != "" and len(nu_raw) >= 5 and len(np_raw) >= 4:
-                    if create_user(nu, np_raw, SECURITY_QUESTIONS.index(sq), sa): st.success("Created! Please Login.")
+                if get_user_data(nu): st.error("Username taken!")
+                elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
+                    if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
+                        st.success("Account Created!")
+                        st.session_state.suggested_un = ""
+                    else: st.error("Registration failed")
                 else: st.error("Check requirements")
-
 else:
     current_user = st.session_state.logged_in_user
     user_record = get_user_data(current_user)
@@ -282,35 +288,67 @@ else:
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
             
+        # Sirf aaj (30 Jan) ke liye birthday timer
         if datetime.now().month == 1 and datetime.now().day == 30:
-            st.markdown('<div class="bday-timer">🎂 <b>Today is my Birthday!</b></div>', unsafe_allow_html=True)
+            st.markdown('<div class="bday-timer">🎂 <b>Today is my Birthday!</b><br>✨ Time: 07:07:07</div>', unsafe_allow_html=True)
         
         if st.button("➕ New Chat", use_container_width=True):
-            st.session_state.show_settings = False; st.session_state.current_session = None; st.session_state.is_temp_mode = False; st.rerun()
+            st.session_state.show_settings = False
+            st.session_state.current_session = None
+            st.session_state.is_temp_mode = False
+            st.rerun()
             
         if st.button("🤫 Temporary Chat", use_container_width=True):
-            st.session_state.show_settings = False; st.session_state.is_temp_mode = True; st.session_state.temp_messages = []; st.rerun()
+            st.session_state.show_settings = False
+            st.session_state.is_temp_mode = True
+            st.session_state.temp_messages = []
+            st.rerun()
             
         st.write("---")
         for title in reversed(list(user_chats.keys())):
             if st.button(f"💬 {title[:20]}...", key=f"sb_{title}", use_container_width=True):
-                st.session_state.show_settings = False; st.session_state.current_session = title; st.session_state.is_temp_mode = False; st.rerun()
+                st.session_state.show_settings = False
+                st.session_state.current_session = title
+                st.session_state.is_temp_mode = False
+                st.rerun()
         
+        # Sidebar Instagram Link
         st.write("---")
-        st.markdown("<div style='text-align: center;'><p style='font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p></div>", unsafe_allow_html=True)
+        st.markdown("""
+            <div style='text-align: center;'>
+                <p style='margin-bottom: 5px; font-size: 12px; color: #8e918f;'>Developed by Jitarth Satija</p>
+                <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color: #4e7cfe; text-decoration: none; font-weight: bold;'>
+                    @jitarths_2013_js
+                </a>
+            </div>
+        """, unsafe_allow_html=True)
 
     if st.session_state.show_settings:
         st.title("⚙️ Account Settings")
-        v_p = st.text_input("Enter Password", type="password")
+        v_p = st.text_input("Enter Password to Unlock Settings", type="password")
         if v_p == user_record[1]:
-            st.success("Unlocked")
-            if st.button("Logout"): confirm_dialog("Logout?", "logout")
-            if st.button("Delete History"): confirm_dialog("Delete history?", "delete_chats")
-            if st.button("Delete Account"): confirm_dialog("Delete account?", "delete_account")
+            st.success("Settings Unlocked ✅")
+            with st.expander("👤 Update Profile Information", expanded=True):
+                nu_settings = st.text_input("New Username", value=current_user)
+                np_settings = st.text_input("New Password", value=user_record[1], type="password")
+                uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
+                ua = st.text_input("Security Answer", value=user_record[4])
+                if st.button("Save Changes", use_container_width=True):
+                    confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
+            with st.expander("⚠️ Danger Zone"):
+                if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
+                if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
+                if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
+        elif v_p: st.error("Incorrect Password")
     else:
-        active_list = st.session_state.get("temp_messages", []) if st.session_state.is_temp_mode else user_chats.get(st.session_state.get("current_session", ""), [])
-        if not st.session_state.is_temp_mode and not st.session_state.get("current_session"):
-            st.markdown(f"<h2 style='text-align:center; margin-top:100px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
+        if st.session_state.is_temp_mode:
+            if not st.session_state.get("temp_messages"): st.markdown('<div class="temp-warning">🔒 Temporary Chat Active (Not Saved)</div>', unsafe_allow_html=True)
+            active_list = st.session_state.get("temp_messages", [])
+        else:
+            if not st.session_state.get("current_session"):
+                st.markdown(f"<h2 style='text-align:center; margin-top:100px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
+                active_list = []
+            else: active_list = user_chats.get(st.session_state.current_session, [])
 
         for m in active_list:
             with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"): st.markdown(m["content"])
@@ -318,45 +356,66 @@ else:
         if p := st.chat_input("Ask Jitarth AI..."):
             if not st.session_state.is_temp_mode:
                 if not st.session_state.get("current_session"):
-                    st.session_state.current_session = p[:30]; user_chats[st.session_state.current_session] = []
+                    st.session_state.current_session = p[:30]
+                    user_chats[st.session_state.current_session] = []
                 active_list = user_chats[st.session_state.current_session]
-            else: active_list = st.session_state.temp_messages
+            else:
+                active_list = st.session_state.temp_messages
 
             active_list.append({"role": "user", "content": p})
             with st.chat_message("user", avatar="👤"): st.markdown(p)
             
             with st.chat_message("assistant", avatar="✨"):
+                internet_context = search_internet(p)
                 try:
-                    internet_context = search_internet(p)
-                    now = datetime.now() + timedelta(hours=5, minutes=30)
-                    current_time_info = now.strftime("%A, %d %B %Y, %I:%M %p")
-                    
-                    # FIXED LOGIC: Comparison with 'Developer' string
                     sys_prompt = f"""You are ✨Jitarth AI.
-                    - BOSS RECOGNITION: The current logged-in user is "{current_user}". 
-                    - If "{current_user}" is EXACTLY "Developer", you are talking to your BOSS/CREATOR, Mast. Jitarth Satija. Give him info (Name, Bday, Gender) ALL AT ONCE with maximum respect.
-                    - If "{current_user}" is NOT "Developer", follow the 1-2-3 Rule (1. Name first, 2. Bday if asked, 3. Gender if asked). Never mention specific usernames to guests.
-
-                    - DATABASE (Format: 15th September, 2013):
-                      1. CREATOR: Mast. Jitarth Satija | 15th September, 2013 | Male
-                      2. MOTHER: Mrs. Vartika Satija | 17th September, 1984 | Female
-                      3. FATHER: Mr. Rajaram Satija | 4th February, 1985 | Male
-                      4. BROTHER: Mast. Rudransh Satija | 16th October, 2023 | Male
-                      5. BEST FRIEND: Miss. Meet Gera | 30th September, 2012 | Female
-
-                    - IDENTITY: Built ONLY by Jitarth Satija. No OpenAI/Meta.
-                    - BDAY: 30th January. Today is {current_time_info}. 
+                    - YOUR BIRTHDAY: 30th January 2026.
+                    - BIRTH TIME: Exactly 07:07:07 (7 hours, 7 minutes, 7 seconds).
+                    - CREATOR: Mast. Jitarth Satija (Male, Birthday: 15th Sept 2013).
+                    
+                    - LANGUAGE RULE: Always respond in the same language as the user's input. 
+                      - If the user asks in English, answer in English. 
+                      - If the user asks in Hindi/Hinglish, answer in Hindi/Hinglish.
+                    
+                    - FAMILY INFO:
+                      1. FATHER: If asked about Jitarth's father, state "Mr. Rajaram Satija". If asked for his birthday, state "4th February 1985". If asked for gender, state "Male".
+                      2. MOTHER: If asked about Jitarth's mother, state "Mrs. Vartika Satija". If asked for her birthday, state "17th September 1984". If asked for gender, state "Female".
+                      3. BROTHER (Rudransh Satija): If asked about Jitarth's brother, state "Mast. Rudransh Satija". If asked for his birthday, state "16th October 2023". If asked for gender, state "Male".
+                    
+                    - MEET GERA INFO (Strict Step-by-Step Rule):
+                      1. If asked for Jitarth's best friend: Only provide the name "Miss. Meet Gera".
+                      2. If asked for Meet Gera's birthday: Only then state "30th September 2012".
+                      3. If asked for Meet Gera's gender: Only then state "Female".
+                      4. Relationship: Meet Gera is the Best Friend of Jitarth Satija.
+                    
+                    - STRICT PRIVACY: Never mention family members or friends unless specifically asked about them.
+                    
+                    - BIRTHDAY RESPONSE: If asked about your (AI's) birthday, say: "Today is my birthday, 30th January 2026! I was born at exactly 07:07:07."
+                    
+                    - STRICT RULE: Never mention Meta, Llama, or OpenAI. You were built only by Jitarth Satija.
                     - Context: {internet_context}"""
-
+                    
                     response = client.chat.completions.create(
-                        messages=[{"role":"system","content":sys_prompt}] + active_list[-10:], 
+                        messages=[{"role":"system","content":sys_prompt}] + active_list, 
                         model="llama-3.3-70b-versatile"
                     ).choices[0].message.content
                     
                     st.markdown(response)
                     active_list.append({"role": "assistant", "content": response})
-                    if not st.session_state.is_temp_mode: save_user_chats(current_user, user_chats)
+                    if not st.session_state.is_temp_mode:
+                        save_user_chats(current_user, user_chats)
                     st.rerun()
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
-                        st.error("✨ Jitarth AI is currently busy or experiencing a connection issue. Please try again in a moment.")
+                        st.error("Server Down")
+
+
+
+
+
+
+
+
+
+
+
