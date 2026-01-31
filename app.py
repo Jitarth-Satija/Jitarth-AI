@@ -464,7 +464,11 @@ else:
                     - Context: {internet_context}"""
 
                     response = client.chat.completions.create(
-                        messages=[{"role":"system","content":sys_prompt}] + active_list, 
+                        # Sirf current chat ka context bhejne ke liye
+                    chat_history = active_list[-10:] # Last 10 messages tak yaad rakhega context ke liye
+                    
+                    response = client.chat.completions.create(
+                        messages=[{"role":"system","content":sys_prompt}] + chat_history, 
                         model="llama-3.3-70b-versatile"
                     ).choices[0].message.content
                     
@@ -476,6 +480,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("✨ Jitarth AI is currently busy or experiencing a connection issue. Please try again in a moment.")
+
 
 
 
