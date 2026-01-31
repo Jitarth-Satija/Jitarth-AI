@@ -368,8 +368,8 @@ else:
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
                 try:
-                     with st.chat_message("assistant", avatar="✨"):
-                internet_context = search_internet(p)
+                    with st.chat_message("assistant", avatar="✨"):
+                    internet_context = search_internet(p)
                 try:
                     # --- NAYA SYSTEM PROMPT YAHAN SE ---
                     sys_prompt = f"""You are ✨Jitarth AI.
@@ -411,6 +411,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.error("Server Down")
+
 
 
 
