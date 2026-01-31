@@ -45,13 +45,15 @@ SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favouri
 
 # Input Validation Helpers
 def validate_username(u):
-    u = re.sub(r'[^a-zA-Z0-9 @ _]', '', u)
-    return u[:20]
+    # Rule: Letters, numbers, max 1 @, max 1 _, max 2 spaces, 5-20 chars
+    u_clean = re.sub(r'[^a-zA-Z0-9@_ ]', '', u) 
+    return u_clean # Filtered string return karega
 
 def validate_password(p):
-    p = p.replace(" ", "") 
-    p = re.sub(r'[^a-zA-Z0-9@_]', '', p)
-    return p[:10]
+    # Rule: Letters, numbers, max 1 @, max 1 _, NO spaces, 4-15 chars
+    p_clean = p.replace(" ", "") # No spaces allowed
+    p_clean = re.sub(r'[^a-zA-Z0-9@_]', '', p_clean)
+    return p_clean
 
 def generate_suggestions(base_u):
     if not base_u or len(base_u) < 2: base_u = "user"
@@ -253,9 +255,22 @@ if st.session_state.logged_in_user is None:
                 st.session_state.forgot_mode = True
                 st.rerun()
         with tab2:
+            # --- 1. USERNAME SECTION ---
             nu_val = st.session_state.suggested_un
             nu_raw = st.text_input("Choose Username (5-20 characters)", value=nu_val, key="reg_u")
             nu = validate_username(nu_raw)
+            
+            u_l = len(nu)
+            if 0 < u_l < 5:
+                st.write(f":red[Needs {5 - u_l} more characters]")
+            elif u_l > 20:
+                st.write(":red[Too long! Max 20 characters allowed]")
+            elif nu.count("@") > 1 or nu.count("_") > 1 or nu.count(" ") > 2:
+                st.write(":red[Check Rules: Max 1 '@', 1 '_', and 2 spaces allowed]")
+            elif u_l >= 5:
+                st.write(":green[Username length is valid!]")
+
+            # Suggestions (Existing Logic)
             st.write("Suggestions:")
             cols = st.columns(3)
             suggs = generate_suggestions(nu)
@@ -263,18 +278,48 @@ if st.session_state.logged_in_user is None:
                 if cols[i].button(s, key=f"sug_reg_{s}", use_container_width=True):
                     st.session_state.suggested_un = s
                     st.rerun()
-            np_raw = st.text_input("Create Password (4-10 characters)", type="password", key="reg_p")
+
+            # --- 2. PASSWORD SECTION ---
+            np_raw = st.text_input("Create Password (4-15 characters)", type="password", key="reg_p")
             np = validate_password(np_raw)
+            p_l = len(np)
+            if 0 < p_l < 4:
+                st.write(f":red[Needs {4 - p_l} more characters]")
+            elif p_l > 15:
+                st.write(":red[Too long! Max 15 characters allowed]")
+            elif " " in np_raw:
+                st.write(":red[Spaces are not allowed in password]")
+            elif np.count("@") > 1 or np.count("_") > 1:
+                st.write(":red[Max 1 '@' and 1 '_' allowed]")
+            elif p_l >= 4:
+                st.write(":green[Password is valid!]")
+
+            # --- 3. SECURITY QUESTION & ANSWER ---
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
-            sa = st.text_input("Answer (Min 2 characters)")
+            sa = st.text_input("Security Answer (2-10 letters only)")
+            s_l = len(sa)
+            
+            if 0 < s_l < 2:
+                st.write(f":red[Needs {2 - s_l} more characters]")
+            elif s_l > 10:
+                st.write(":red[Too long! Max 10 letters allowed]")
+            elif not sa.isalpha() and s_l > 0:
+                st.write(":red[Only letters (A-Z) are allowed!]")
+            elif s_l >= 2:
+                st.write(":green[Answer is valid!]")
+
+            # --- FINAL SIGN UP BUTTON ---
             if st.button("SIGN UP", use_container_width=True):
-                if get_user_data(nu): st.error("Username taken!")
-                elif len(nu) >= 5 and len(np) >= 4 and len(sa) >= 2:
+                # Check all conditions before allowing database entry
+                if get_user_data(nu): 
+                    st.error("Username already taken!")
+                elif 5 <= u_l <= 20 and 4 <= p_l <= 15 and 2 <= s_l <= 10 and sa.isalpha():
                     if create_user(nu, np, SECURITY_QUESTIONS.index(sq), sa):
-                        st.success("Account Created!")
+                        st.success("Account Created! You can now Login.")
                         st.session_state.suggested_un = ""
-                    else: st.error("Registration failed")
-                else: st.error("Check requirements")
+                    else: st.error("Registration failed. Internal Error.")
+                else: 
+                    st.error("Please correct the errors in red before signing up.")
 else:
     current_user = st.session_state.logged_in_user
     user_record = get_user_data(current_user)
@@ -329,12 +374,46 @@ else:
         if v_p == user_record[1]:
             st.success("Settings Unlocked ✅")
             with st.expander("👤 Update Profile Information", expanded=True):
+                # --- NEW USERNAME VALIDATION ---
                 nu_settings = st.text_input("New Username", value=current_user)
+                nu_s = validate_username(nu_settings)
+                u_l_s = len(nu_s)
+                
+                if 0 < u_l_s < 5:
+                    st.write(f":red[Needs {5 - u_l_s} more characters]")
+                elif nu_s.count("@") > 1 or nu_s.count("_") > 1 or nu_s.count(" ") > 2:
+                    st.write(":red[Max 1 '@', 1 '_', and 2 spaces allowed]")
+                
+                # --- NEW PASSWORD VALIDATION ---
                 np_settings = st.text_input("New Password", value=user_record[1], type="password")
+                np_s = validate_password(np_settings)
+                p_l_s = len(np_s)
+                
+                if 0 < p_l_s < 4:
+                    st.write(f":red[Needs {4 - p_l_s} more characters]")
+                elif " " in np_settings:
+                    st.write(":red[Spaces not allowed in password]")
+                elif np_s.count("@") > 1 or np_s.count("_") > 1:
+                    st.write(":red[Max 1 '@' and 1 '_' allowed]")
+
+                # --- NEW SECURITY ANSWER VALIDATION ---
                 uq = st.selectbox("Security Question", SECURITY_QUESTIONS, index=user_record[3])
                 ua = st.text_input("Security Answer", value=user_record[4])
+                s_l_s = len(ua)
+
+                if 0 < s_l_s < 2:
+                    st.write(f":red[Needs {2 - s_l_s} more characters]")
+                elif not ua.isalpha() and s_l_s > 0:
+                    st.write(":red[Only letters (A-Z) allowed!]")
+
+                # --- SAVE BUTTON WITH FINAL RULES CHECK ---
                 if st.button("Save Changes", use_container_width=True):
-                    confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
+                    # Rules Check: Username(5-20), Password(4-15), Answer(2-10 + alpha)
+                    if (5 <= u_l_s <= 20 and 4 <= p_l_s <= 15 and 
+                        2 <= s_l_s <= 10 and ua.isalpha()):
+                        confirm_dialog("Update details?", "update_profile", (current_user, nu_s, np_s, SECURITY_QUESTIONS.index(uq), ua))
+                    else:
+                        st.error("Please follow all rules in red before saving!")
             with st.expander("⚠️ Danger Zone"):
                 if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
                 if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
@@ -424,6 +503,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.warning("✨ Jitarth AI is thinking deeply... Please try sending the message again.")
+
 
 
 
