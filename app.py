@@ -422,6 +422,9 @@ else:
             
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
+                now = datetime.now()
+                # %A se Day ka naam aayega, %d %B se Date
+                current_time_str = now.strftime("%A, %d %B %Y, %I:%M:%S %p")
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI.
                     - YOUR BIRTHDAY: 30th January 2026.
@@ -456,5 +459,6 @@ else:
                     st.rerun()
                 except Exception as e:
                     if "RerunException" not in str(type(e)): st.error("Server Down")
+
 
 
