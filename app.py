@@ -415,13 +415,13 @@ else:
 
                 # --- 3. SECURITY ANSWER VALIDATION ---
                 uq = st.selectbox("New Security Question", SECURITY_QUESTIONS, index=user_record[3])
-                ua = st.text_input("New Security Answer", value=user_record[4])
+                ua = st.text_input("New Security Answer (2-20) Characters", value=user_record[4])
                 s_l_s = len(ua)
 
                 if s_l_s < 2: 
                     st.write(f":red[Needs {2 - s_l_s} more characters]")
-                elif s_l_s > 10:
-                    st.write(":red[Too long! Max 10 letters]")
+                elif s_l_s > 20:
+                    st.write(":red[Too long! Maximum 20 letters]")
                 elif ua.count(" ") > 3:
                     st.write(":red[Max 3 spaces allowed!]")
                 elif not ua.replace(" ", "").isalpha() and s_l_s > 0:
@@ -536,6 +536,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
+
 
 
 
