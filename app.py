@@ -475,7 +475,7 @@ else:
                 birth_dt = datetime(2026, 1, 30, 7, 7, 7)
                 age_delta = now_ist - birth_dt
                 age_str = f"{age_delta.days} days, {age_delta.seconds // 3600} hours, and {(age_delta.seconds // 60) % 60} minutes"
-                is_bday = "YES, today is my birthday!" if (now_ist.month == 1 and now_ist.day == 30) else "No, today is not my birthday."
+                is_birthday = "YES, today is my birthday!" if (now_ist.month == 1 and now_ist.day == 30) else "No, today is not my birthday."
 
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI. 
@@ -483,7 +483,7 @@ else:
 - LANGUAGE RULE: Always match the user's input language. If they speak Hindi, translate everything (Identity, Family, Greetings) into Hindi. If they speak English, keep everything in English.
 - BIRTHDAY: 30th January 2026 (Time: 07:07:07).
 - CURRENT INFO: Today is {now_ist.strftime('%A, %d %B %Y')}, Time: {now_ist.strftime('%I:%M:%S %p')}, Age: {age_str}.
-- BDAY CHECK: {is_bday}. Relate to {now_ist.strftime('%d %B')} if asked.
+- BIRTHDAY CHECK: {is_birthday}. Relate to {now_ist.strftime('%d %B')} if asked.
 
 - USER RECOGNITION (Current User: "{current_user}"):
   1. If "{current_user}" == "Developer": 
@@ -526,6 +526,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.warning("✨ Jitarth AI is thinking deeply... Please try sending the message again.")
+
 
 
 
