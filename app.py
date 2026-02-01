@@ -240,7 +240,7 @@ if st.session_state.logged_in_user is None:
                     cookie_manager.set('jitarth_user_cookie', u_login)
                     st.rerun()
                 else: st.error("Invalid Username or Password")
-            if st.button("Recover Password?", use_container_width=True):
+            if st.button("🔑 Recover Password?", use_container_width=True):
                 st.session_state.forgot_mode = True
                 st.rerun()
         with tab2:
@@ -366,7 +366,7 @@ else:
             
             st.write("---")
             v_p = st.text_input("Enter Password to Unlock Settings", type="password")
-            if st.button("Recover Password?", use_container_width=True):
+            if st.button("🔑 Recover Password?", use_container_width=True):
                 st.session_state.settings_recover_mode = True
                 st.rerun()
             
@@ -430,7 +430,7 @@ else:
                             st.error("Please fix the red errors above before saving.")
 
                 with st.expander("⚠️ Danger Zone"):
-                    if st.button("🔑 Check/Recover Password Details", use_container_width=True):
+                    if st.button("🔑 Recover Password?", use_container_width=True):
                         st.session_state.settings_recover_mode = True
                         st.rerun()
                     if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
@@ -502,7 +502,7 @@ else:
   2. FOR DEVELOPER (IS_THIS_USER_THE_DEVELOPER is "TRUE"): 
      - Provide ALL details (Name, Bday, Gender) if asked.
   3. FOR NORMAL USERS (IS_THIS_USER_THE_DEVELOPER is "FALSE"): 
-     - If asked "Tell me about your creator's family": Only provide the NAMES first. 
+     - If anyone asks to tell about your creator's family then you should only provide their names first and do not share other personal details unless specifically asked by the creator. 
 
 - DYNAMIC TRANSLATION: Your name (Jitarth AI) and your creator's name (Jitarth) must stay as 'Jitarth'.
   STRICT HINDI SPELLING: When writing 'Jitarth' in Hindi, always use 'जीतार्थ' (Jee-tarth). NEVER use 'जितार्थ'.
@@ -520,6 +520,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
