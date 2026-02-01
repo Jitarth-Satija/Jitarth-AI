@@ -382,8 +382,8 @@ else:
             if v_p == user_record[1]:
                 # ... baaki ka code ...
         if v_p == user_record[1]:
-            st.success("Settings Unlocked ✅")
-            with st.expander("👤 Update Profile Information", expanded=True):
+                st.success("Settings Unlocked ✅")
+                with st.expander("👤 Update Profile Information", expanded=True):
                 # --- 1. USERNAME VALIDATION ---
                 nu_settings = st.text_input("New Username (5-20) Characters", value=current_user)
                 # re.findall check: letter, number, @, _, space ke alawa sab bad (full stops also caught here)
@@ -448,14 +448,14 @@ else:
                         confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
                     else:
                         st.error("Please fix the red errors above before saving.")
-            with st.expander("⚠️ Danger Zone"):
-                if st.button("🔑 Check/Recover Password Details", use_container_width=True):
+                with st.expander("⚠️ Danger Zone"):
+                    if st.button("🔑 Check/Recover Password Details", use_container_width=True):
                     st.session_state.settings_recover_mode = True
                     st.rerun()
-                if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
-                if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
-                if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
-        elif v_p: st.error("Incorrect Password")
+                        if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
+                        if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
+                        if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
+            elif v_p: st.error("Incorrect Password")
     else:
         if st.session_state.is_temp_mode:
             if not st.session_state.get("temp_messages"): st.markdown('<div class="temp-warning">🔒 Temporary Chat Active (Not Saved)</div>', unsafe_allow_html=True)
@@ -548,6 +548,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
+
 
 
 
