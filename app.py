@@ -431,7 +431,7 @@ else:
                 # --- SAVE BUTTON WITH STRICT CHECKS ---
                 if st.button("Save Changes", use_container_width=True):
                     # Rules verification
-                    u_ok = 5 <= u_l_s <= 20 and not u_bad_s and nu_settings.count("@") <= 1 and nu_settings.count("_") <= 1 and nu_settings.count(" ") <= 2
+                    u_ok = 5 <= u_l_s <= 20 and not u_bad_s and nu_settings.count("@") <= 1 and nu_settings.count("_") <= 1 and nu_settings.count(" ") <= 2 and (not get_user_data(nu_settings) or nu_settings == current_user)
                     p_ok = 4 <= p_l_s <= 15 and not p_bad_s and " " not in np_settings and np_settings.count("@") <= 1 and np_settings.count("_") <= 1
                     s_ok = 2 <= s_l_s <= 10 and ua.isalpha()
 
@@ -535,6 +535,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
+
 
 
 
