@@ -265,7 +265,7 @@ if st.session_state.logged_in_user is None:
             elif u_bad:
                 st.write(f":red[Symbol '{u_bad[0]}' is not allowed! Only @, _ and space.]")
             elif u_l >= 5:
-                st.write(":green[Username is valid!]")
+                st.write(":green[Username is valid ✅]")
 
             # Suggestions
             st.write("Suggestions:")
@@ -292,22 +292,23 @@ if st.session_state.logged_in_user is None:
             elif p_bad:
                 st.write(f":red[Symbol '{p_bad[0]}' not allowed in password]")
             elif p_l >= 4:
-                st.write(":green[Password is valid!]")
+                st.write(":green[Password is valid ✅!]")
 
             # --- 3. SECURITY ANSWER ---
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
-            sa = st.text_input("Security Answer (2-10 letters only)")
+            sa = st.text_input("Security Answer (2-20 Characters)")
             s_l = len(sa)
             
             if 0 < s_l < 2:
                 st.write(f":red[Needs {2 - s_l} more characters]")
-            elif s_l > 10:
-                st.write(":red[Too long! Max 10 letters allowed]")
-            elif not sa.isalpha() and s_l > 0:
-                st.write(":red[Only letters (A-Z) allowed!]")
+            elif s_l > 20:
+                st.write(":red[Too long! Max 20 letters allowed]")
+            elif sa.count(" ") > 3:
+                st.write(":red[Max 3 spaces allowed!]")
+            elif not sa.replace(" ", "").isalpha() and s_l > 0:
+                st.write(":red[Only letters (A-Z) and spaces allowed!]")
             elif s_l >= 2:
-                st.write(":green[Answer is valid!]")
-
+                st.write(":green[Answer is valid ✅]")
             # SIGN UP BUTTON
             if st.button("SIGN UP", use_container_width=True):
                 # Final strict check
@@ -536,6 +537,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
+
 
 
 
