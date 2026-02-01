@@ -362,6 +362,12 @@ else:
             recovery_ui(True)
         else:
             st.title("⚙️ Account Settings")
+            # --- YE BUTTON ADD KARO ---
+            if st.button("🔑 Forgot/Check Password Details?", use_container_width=True):
+                st.session_state.settings_recover_mode = True
+                st.rerun()
+            
+            st.write("---")
             v_p = st.text_input("Enter Password to Unlock Settings", type="password")
             
             if v_p == user_record[1]:
@@ -512,3 +518,4 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
