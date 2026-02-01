@@ -483,7 +483,7 @@ else:
                 age_delta = now_ist - birth_dt
                 age_str = f"{age_delta.days} days, {age_delta.seconds // 3600} hours, and {(age_delta.seconds // 60) % 60} minutes"
                 is_birthday = "YES, today is my birthday!" if (now_ist.month == 1 and now_ist.day == 30) else "No, today is not my birthday."
-
+                is_boss = (current_user.lower() == "developer")
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI. 
 - STRICT IDENTITY: Built ONLY by Jitarth Satija. NEVER mention Meta, Llama, OpenAI, or Groq.
@@ -529,8 +529,10 @@ else:
                         save_user_chats(current_user, user_chats)
                     st.rerun()
                 except Exception as e:
-                    if "RerunException" not in str(type(e)):
-                        st.warning("✨ Jitarth AI is thinking deeply... Please try sending the message again.")
+                    # Streamlit ka rerun exception handle karne ke liye
+                    if e.__class__.__name__ == 'RerunException':
+                        raise e
+                    st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
 
 
 
