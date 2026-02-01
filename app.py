@@ -459,7 +459,14 @@ else:
             if not st.session_state.is_temp_mode:
                 if not st.session_state.get("current_session"):
                     st.session_state.current_session = p[:30]
+                    # Check if session exists in dictionary, if not, create it
+                    if st.session_state.current_session not in user_chats:
+                        user_chats[st.session_state.current_session] = []
+                
+                # Extra safety check for existing sessions
+                if st.session_state.current_session not in user_chats:
                     user_chats[st.session_state.current_session] = []
+                    
                 active_list = user_chats[st.session_state.current_session]
             else:
                 active_list = st.session_state.temp_messages
@@ -524,6 +531,7 @@ else:
                 except Exception as e:
                     if "RerunException" not in str(type(e)):
                         st.warning("✨ Jitarth AI is thinking deeply... Please try sending the message again.")
+
 
 
 
