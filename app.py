@@ -363,12 +363,12 @@ else:
         else:
             st.title("⚙️ Account Settings")
             # --- YE BUTTON ADD KARO ---
-            if st.button("🔑 Forgot/Check Password Details?", use_container_width=True):
-                st.session_state.settings_recover_mode = True
-                st.rerun()
             
             st.write("---")
             v_p = st.text_input("Enter Password to Unlock Settings", type="password")
+            if st.button("Recover Password?", use_container_width=True):
+                st.session_state.settings_recover_mode = True
+                st.rerun()
             
             if v_p == user_record[1]:
                 st.success("Settings Unlocked ✅")
@@ -518,4 +518,5 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
