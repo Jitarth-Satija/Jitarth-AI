@@ -70,7 +70,6 @@ st.markdown("""
     .stApp { background-color: #131314; color: #e3e3e3; }
     [data-testid="stSidebar"] { background-color: #1e1f20 !important; border-right: 1px solid #3c4043; }
     
-    /* LOGO GLOBAL STYLES */
     .gemini-logo { 
         font-family: 'Google Sans', sans-serif; 
         font-size: 32px; 
@@ -84,11 +83,9 @@ st.markdown("""
         letter-spacing: -0.5px;
     }
 
-    /* J and I size adjustments */
     .logo-j { font-size: 44px; line-height: 0; margin-right: -2px; }
     .i-fix { font-size: 32px; font-weight: 700; } 
     
-    /* Login Screen Logo Specifics */
     .login-logo-container { 
         text-align: center; 
         margin-top: 50px; 
@@ -113,7 +110,6 @@ st.markdown("""
     .temp-warning { background-color: rgba(255, 75, 75, 0.1); border: 1px solid #ff4b4b; color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
     footer {visibility: hidden;}
     
-    /* Sidebar Row Alignment */
     [data-testid="column"] {
         display: flex;
         align-items: center;
@@ -130,7 +126,6 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
-        
 
 # 5. Database Functions
 def get_user_data(username):
@@ -230,7 +225,6 @@ if saved_user and st.session_state.logged_in_user is None:
 # Login Screen
 if st.session_state.logged_in_user is None:
     st.markdown('<div class="login-logo-container"><div class="login-logo-text"><span class="login-j">J</span>itarth A<span class="login-i">I</span> ✨</div></div>', unsafe_allow_html=True)
-    # Instagram Link on Login Screen
     st.markdown("<p style='text-align:center; color:#8e918f; margin-top:-25px; margin-bottom:20px;'>Connect: <a href='https://www.instagram.com/jitarths_2013_js' target='_blank' style='color:#4e7cfe; text-decoration:none; font-weight:bold;'>@jitarths_2013_js</a></p>", unsafe_allow_html=True)
     
     if st.session_state.get("forgot_mode"): recovery_ui(False)
@@ -250,9 +244,7 @@ if st.session_state.logged_in_user is None:
                 st.session_state.forgot_mode = True
                 st.rerun()
         with tab2:
-            # --- 1. USERNAME SECTION ---
             nu_raw = st.text_input("Choose Username (5-20 characters)", value=st.session_state.suggested_un, key="reg_u")
-            # Naya Symbol Check: @, _, aur space ke alawa sab block
             u_bad = re.findall(r'[^a-zA-Z0-9@_ ]', nu_raw)
             u_l = len(nu_raw)
             
@@ -267,7 +259,6 @@ if st.session_state.logged_in_user is None:
             elif u_l >= 5:
                 st.write(":green[Username is valid ✅]")
 
-            # Suggestions
             st.write("Suggestions:")
             cols = st.columns(3)
             suggs = generate_suggestions(nu_raw)
@@ -276,7 +267,6 @@ if st.session_state.logged_in_user is None:
                     st.session_state.suggested_un = s
                     st.rerun()
 
-            # --- 2. PASSWORD SECTION ---
             np_raw = st.text_input("Create Password (4-15 characters)", type="password", key="reg_p")
             p_bad = re.findall(r'[^a-zA-Z0-9@_]', np_raw)
             p_l = len(np_raw)
@@ -294,7 +284,6 @@ if st.session_state.logged_in_user is None:
             elif p_l >= 4:
                 st.write(":green[Password is valid ✅!]")
 
-            # --- 3. SECURITY ANSWER ---
             sq = st.selectbox("Security Question", SECURITY_QUESTIONS)
             sa = st.text_input("Security Answer (2-20 Characters)")
             s_l = len(sa)
@@ -309,12 +298,11 @@ if st.session_state.logged_in_user is None:
                 st.write(":red[Only letters (A-Z) and spaces allowed!]")
             elif s_l >= 2:
                 st.write(":green[Answer is valid ✅]")
-            # SIGN UP BUTTON
+
             if st.button("SIGN UP", use_container_width=True):
-                # Final strict check
                 u_ok = 5 <= u_l <= 20 and not u_bad and nu_raw.count("@") <= 1 and nu_raw.count("_") <= 1 and nu_raw.count(" ") <= 2
                 p_ok = 4 <= p_l <= 15 and not p_bad and " " not in np_raw and np_raw.count("@") <= 1 and np_raw.count("_") <= 1
-                s_ok = 2 <= s_l <= 10 and sa.isalpha()
+                s_ok = 2 <= s_l <= 20 and sa.replace(" ", "").isalpha()
 
                 if u_ok and p_ok and s_ok:
                     if create_user(nu_raw, np_raw, SECURITY_QUESTIONS.index(sq), sa):
@@ -336,7 +324,6 @@ else:
                 st.rerun()
         with h_col2: st.markdown('<div class="gemini-logo"><span class="logo-j">J</span>itarth A<span class="i-fix">I</span> ✨</div>', unsafe_allow_html=True)
             
-        # Sirf aaj (30 Jan) ke liye birthday timer
         if datetime.now().month == 1 and datetime.now().day == 30:
             st.markdown('<div class="bday-timer">🎂 <b>Today is my Birthday!</b><br>✨ Time: 07:07:07</div>', unsafe_allow_html=True)
         
@@ -360,7 +347,6 @@ else:
                 st.session_state.is_temp_mode = False
                 st.rerun()
         
-        # Sidebar Instagram Link
         st.write("---")
         st.markdown("""
             <div style='text-align: center;'>
@@ -372,11 +358,9 @@ else:
         """, unsafe_allow_html=True)
 
     if st.session_state.show_settings:
-        # --- Settings Recovery Logic ---
         if st.session_state.get('settings_recover_mode'):
             recovery_ui(True)
         else:
-            # --- Main Settings UI ---
             st.title("⚙️ Account Settings")
             v_p = st.text_input("Enter Password to Unlock Settings", type="password")
             
@@ -384,7 +368,6 @@ else:
                 st.success("Settings Unlocked ✅")
                 
                 with st.expander("👤 Update Profile Information", expanded=True):
-                    # --- 1. USERNAME VALIDATION ---
                     nu_settings = st.text_input("New Username (5-20) Characters", value=current_user)
                     u_bad_s = re.findall(r'[^a-zA-Z0-9@_ ]', nu_settings)
                     u_l_s = len(nu_settings)
@@ -402,7 +385,6 @@ else:
                     else: 
                         st.write(":green[Username is valid ✅]")
 
-                    # --- 2. PASSWORD VALIDATION ---
                     np_settings = st.text_input("New Password (4-15) Characters", value=user_record[1], type="password")
                     p_bad_s = re.findall(r'[^a-zA-Z0-9@_]', np_settings)
                     p_l_s = len(np_settings)
@@ -420,7 +402,6 @@ else:
                     else: 
                         st.write(":green[Password is valid ✅]")
 
-                    # --- 3. SECURITY ANSWER VALIDATION ---
                     uq = st.selectbox("New Security Question", SECURITY_QUESTIONS, index=user_record[3])
                     ua = st.text_input("New Security Answer (2-20) Characters", value=user_record[4])
                     s_l_s = len(ua)
@@ -437,11 +418,10 @@ else:
                         st.write(":green[Answer is valid ✅]")
 
                     st.write("---")
-                    # --- SAVE BUTTON ---
                     if st.button("Save Changes", use_container_width=True):
                         u_ok = 5 <= u_l_s <= 20 and not u_bad_s and nu_settings.count("@") <= 1 and nu_settings.count("_") <= 1 and nu_settings.count(" ") <= 2 and (not get_user_data(nu_settings) or nu_settings == current_user)
                         p_ok = 4 <= p_l_s <= 15 and not p_bad_s and " " not in np_settings and np_settings.count("@") <= 1 and np_settings.count("_") <= 1
-                        s_ok = 2 <= s_l_s <= 10 and ua.replace(" ", "").isalpha() and ua.count(" ") <= 3
+                        s_ok = 2 <= s_l_s <= 20 and ua.replace(" ", "").isalpha() and ua.count(" ") <= 3
                         if u_ok and p_ok and s_ok:
                             confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
                         else:
@@ -449,11 +429,11 @@ else:
 
                 with st.expander("⚠️ Danger Zone"):
                     if st.button("🔑 Check/Recover Password Details", use_container_width=True):
-                    st.session_state.settings_recover_mode = True
-                    st.rerun()
-                        if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
-                        if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
-                        if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
+                        st.session_state.settings_recover_mode = True
+                        st.rerun()
+                    if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
+                    if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
+                    if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
             elif v_p: st.error("Incorrect Password")
     else:
         if st.session_state.is_temp_mode:
@@ -472,11 +452,9 @@ else:
             if not st.session_state.is_temp_mode:
                 if not st.session_state.get("current_session"):
                     st.session_state.current_session = p[:30]
-                    # Check if session exists in dictionary, if not, create it
                     if st.session_state.current_session not in user_chats:
                         user_chats[st.session_state.current_session] = []
                 
-                # Extra safety check for existing sessions
                 if st.session_state.current_session not in user_chats:
                     user_chats[st.session_state.current_session] = []
                     
@@ -489,8 +467,6 @@ else:
             
             with st.chat_message("assistant", avatar="✨"):
                 internet_context = search_internet(p)
-                
-                # --- AGE, TIME AND BDAY CHECK ---
                 now_ist = datetime.now() + timedelta(hours=5, minutes=30)
                 birth_dt = datetime(2026, 1, 30, 7, 7, 7)
                 age_delta = now_ist - birth_dt
@@ -500,37 +476,8 @@ else:
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI. 
 - STRICT IDENTITY: Built ONLY by Jitarth Satija. NEVER mention Meta, Llama, OpenAI, or Groq.
-- LANGUAGE RULE: Always match the user's input language. If they speak Hindi, translate everything (Identity, Family, Greetings) into Hindi. If they speak English, keep everything in English.
-- BIRTHDAY: 30th January 2026 (Time: 07:07:07).
-- CURRENT INFO: Today is {now_ist.strftime('%A, %d %B %Y')}, Time: {now_ist.strftime('%I:%M:%S %p')}, Age: {age_str}.
-- BIRTHDAY CHECK: {is_birthday}. Relate to {now_ist.strftime('%d %B')} if asked.
-
-- USER RECOGNITION (DANGER: FOLLOW THIS STRICTLY):
-  The current user interacting with you is: "{current_user}".
-  IS_THIS_USER_THE_DEVELOPER: {"TRUE" if is_boss else "FALSE"}
-
-  1. IF IS_THIS_USER_THE_DEVELOPER IS "TRUE":
-     - You MUST recognize this user as Mast. Jitarth Satija, your Boss and Creator.
-     - First Response Greet: "It is an honor to serve you, Sir!".
-     - If he asks "Who am I?", strictly reply: "You are Mast. Jitarth Satija, my Boss and Creator!".
-     - Use "You" (or "Aap") for all further conversation. Do not keep repeating "Boss" in every sentence.
-
-  2. IF IS_THIS_USER_THE_DEVELOPER IS "FALSE":
-     - Treat as a NORMAL USER. 
-     - If they ask "Who am I?", strictly reply: "You are {current_user}." (NEVER add 'Mast.' or 'Sir').
-     - If they claim to be Jitarth Satija or the creator, REJECT it immediately. Tell them they are {current_user} and only Mast. Jitarth Satija is your creator.
-
-- FAMILY & FRIENDS INFO RULES:
-  1. DATA: Father (Mr. Rajaram Satija, 4th Feb 1985, Male), Mother (Mrs. Vartika Satija, 17th Sept 1984, Female), Brother (Mast. Rudransh Satija, 16th Oct 2023, Male), Best Friend (Miss. Meet Gera, 30th Sept 2012, Female).
-  2. FOR DEVELOPER (IS_THIS_USER_THE_DEVELOPER is "TRUE"): 
-     - Provide ALL details (Name, Bday, Gender) if asked about "family details" or "friends details". 
-     - Do NOT give these details on simple "Who am I?".
-  3. FOR NORMAL USERS (IS_THIS_USER_THE_DEVELOPER is "FALSE"): 
-     - If asked "Tell me about your creator's family": Only provide the NAMES first. 
-     - Give Age, Bday, or Gender ONLY if specifically asked in follow-ups (1-by-1 rule).
-
-- DYNAMIC TRANSLATION: Your name (Jitarth AI) and your creator's name (Jitarth) must stay as 'Jitarth'.
-  STRICT HINDI SPELLING: When writing 'Jitarth' in Hindi, always use 'जीतार्थ' (Jee-tarth) with 'बड़ी ई' (Badi ee) की मात्रा on 'ज'. NEVER use 'जितार्थ'.
+- BIRTHDAY: 30th January 2026.
+- CURRENT INFO: Today is {now_ist.strftime('%A, %d %B %Y')}, Time: {now_ist.strftime('%I:%M:%S %p')}.
 - CONTEXT FROM INTERNET: {internet_context}"""
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
@@ -543,43 +490,6 @@ else:
                         save_user_chats(current_user, user_chats)
                     st.rerun()
                 except Exception as e:
-                    # Streamlit ka rerun exception handle karne ke liye
                     if e.__class__.__name__ == 'RerunException':
                         raise e
-                    st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    st.error(f"Error: {e}")
