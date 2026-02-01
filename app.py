@@ -388,6 +388,8 @@ else:
                     st.write(":red[Too long! Max 20 characters]")
                 elif nu_settings.count("@") > 1 or nu_settings.count("_") > 1 or nu_settings.count(" ") > 2:
                     st.write(":red[Max 1 '@', 1 '_', and 2 spaces allowed]")
+                elif get_user_data(nu_settings) and nu_settings != current_user:
+                    st.write(":red[Username already taken! Try another one.]")
                 elif u_bad_s: 
                     st.write(f":red[Symbol '{u_bad_s[0]}' is not allowed! Only @, _ and space.]")
                 else: 
@@ -533,6 +535,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
+
 
 
 
