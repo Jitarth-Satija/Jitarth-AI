@@ -521,6 +521,7 @@ else:
      - Give Age, Bday, or Gender ONLY if specifically asked in follow-ups (1-by-1 rule).
 
 - DYNAMIC TRANSLATION: Your name (Jitarth AI) and your creator's name (Jitarth) must stay as 'Jitarth'.
+  STRICT HINDI SPELLING: When writing 'Jitarth' in Hindi, always use 'जीतार्थ' (Jee-tarth) with 'बड़ी ई' (Badi ee) की मात्रा on 'ज'. NEVER use 'जितार्थ'.
 - CONTEXT FROM INTERNET: {internet_context}"""
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
@@ -537,6 +538,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
+
 
 
 
