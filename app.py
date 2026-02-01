@@ -366,7 +366,7 @@ else:
             
             st.write("---")
             v_p = st.text_input("Enter Password to Unlock Settings", type="password")
-            if st.button("🔑 Recover Password?", use_container_width=True):
+            if st.button("🔑 Recover Password?", use_container_width=True, key="recover_settings_btn"):
                 st.session_state.settings_recover_mode = True
                 st.rerun()
             
@@ -430,9 +430,6 @@ else:
                             st.error("Please fix the red errors above before saving.")
 
                 with st.expander("⚠️ Danger Zone"):
-                    if st.button("🔑 Recover Password?", use_container_width=True):
-                        st.session_state.settings_recover_mode = True
-                        st.rerun()
                     if st.button("🔴 Logout Account", use_container_width=True): confirm_dialog("Logout?", "logout")
                     if st.button("🗑️ Delete All Chats", use_container_width=True): confirm_dialog("Delete history?", "delete_chats")
                     if st.button("❌ Delete Account Permanently", use_container_width=True): confirm_dialog("Delete account?", "delete_account")
@@ -520,6 +517,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
