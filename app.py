@@ -372,82 +372,81 @@ else:
         """, unsafe_allow_html=True)
 
     if st.session_state.show_settings:
-        # --- YE CHAR LINES ADD KARO ---
+        # --- Settings Recovery Logic ---
         if st.session_state.get('settings_recover_mode'):
             recovery_ui(True)
         else:
-            # --- PURANA CODE AB IS ELSE KE ANDAR CHALA JAYEGA ---
+            # --- Main Settings UI ---
             st.title("⚙️ Account Settings")
             v_p = st.text_input("Enter Password to Unlock Settings", type="password")
+            
             if v_p == user_record[1]:
-                # ... baaki ka code ...
-        if v_p == user_record[1]:
                 st.success("Settings Unlocked ✅")
+                
                 with st.expander("👤 Update Profile Information", expanded=True):
-                # --- 1. USERNAME VALIDATION ---
-                nu_settings = st.text_input("New Username (5-20) Characters", value=current_user)
-                # re.findall check: letter, number, @, _, space ke alawa sab bad (full stops also caught here)
-                u_bad_s = re.findall(r'[^a-zA-Z0-9@_ ]', nu_settings)
-                u_l_s = len(nu_settings)
-                
-                if u_l_s < 5: 
-                    st.write(f":red[Needs {5 - u_l_s} more characters]")
-                elif u_l_s > 20:
-                    st.write(":red[Too long! Max 20 characters]")
-                elif nu_settings.count("@") > 1 or nu_settings.count("_") > 1 or nu_settings.count(" ") > 2:
-                    st.write(":red[Max 1 '@', 1 '_', and 2 spaces allowed]")
-                elif get_user_data(nu_settings) and nu_settings != current_user:
-                    st.write(":red[Username already taken! Try another one.]")
-                elif u_bad_s: 
-                    st.write(f":red[Symbol '{u_bad_s[0]}' is not allowed! Only @, _ and space.]")
-                else: 
-                    st.write(":green[Username is valid ✅]")
+                    # --- 1. USERNAME VALIDATION ---
+                    nu_settings = st.text_input("New Username (5-20) Characters", value=current_user)
+                    u_bad_s = re.findall(r'[^a-zA-Z0-9@_ ]', nu_settings)
+                    u_l_s = len(nu_settings)
+                    
+                    if u_l_s < 5: 
+                        st.write(f":red[Needs {5 - u_l_s} more characters]")
+                    elif u_l_s > 20:
+                        st.write(":red[Too long! Max 20 characters]")
+                    elif nu_settings.count("@") > 1 or nu_settings.count("_") > 1 or nu_settings.count(" ") > 2:
+                        st.write(":red[Max 1 '@', 1 '_', and 2 spaces allowed]")
+                    elif get_user_data(nu_settings) and nu_settings != current_user:
+                        st.write(":red[Username already taken! Try another one.]")
+                    elif u_bad_s: 
+                        st.write(f":red[Symbol '{u_bad_s[0]}' is not allowed! Only @, _ and space.]")
+                    else: 
+                        st.write(":green[Username is valid ✅]")
 
-                # --- 2. PASSWORD VALIDATION ---
-                np_settings = st.text_input("New Password (4-15) Characters", value=user_record[1], type="password")
-                p_bad_s = re.findall(r'[^a-zA-Z0-9@_]', np_settings)
-                p_l_s = len(np_settings)
-                
-                if p_l_s < 4: 
-                    st.write(f":red[Needs {4 - p_l_s} more characters]")
-                elif p_l_s > 15:
-                    st.write(":red[Too long! Max 15 characters]")
-                elif " " in np_settings: 
-                    st.write(":red[Spaces not allowed in password]")
-                elif np_settings.count("@") > 1 or np_settings.count("_") > 1:
-                    st.write(":red[Max 1 '@' and 1 '_' allowed]")
-                elif p_bad_s: 
-                    st.write(f":red[Symbol '{p_bad_s[0]}' not allowed in password]")
-                else: 
-                    st.write(":green[Password is valid ✅]")
+                    # --- 2. PASSWORD VALIDATION ---
+                    np_settings = st.text_input("New Password (4-15) Characters", value=user_record[1], type="password")
+                    p_bad_s = re.findall(r'[^a-zA-Z0-9@_]', np_settings)
+                    p_l_s = len(np_settings)
+                    
+                    if p_l_s < 4: 
+                        st.write(f":red[Needs {4 - p_l_s} more characters]")
+                    elif p_l_s > 15:
+                        st.write(":red[Too long! Max 15 characters]")
+                    elif " " in np_settings: 
+                        st.write(":red[Spaces not allowed in password]")
+                    elif np_settings.count("@") > 1 or np_settings.count("_") > 1:
+                        st.write(":red[Max 1 '@' and 1 '_' allowed]")
+                    elif p_bad_s: 
+                        st.write(f":red[Symbol '{p_bad_s[0]}' not allowed in password]")
+                    else: 
+                        st.write(":green[Password is valid ✅]")
 
-                # --- 3. SECURITY ANSWER VALIDATION ---
-                uq = st.selectbox("New Security Question", SECURITY_QUESTIONS, index=user_record[3])
-                ua = st.text_input("New Security Answer (2-20) Characters", value=user_record[4])
-                s_l_s = len(ua)
+                    # --- 3. SECURITY ANSWER VALIDATION ---
+                    uq = st.selectbox("New Security Question", SECURITY_QUESTIONS, index=user_record[3])
+                    ua = st.text_input("New Security Answer (2-20) Characters", value=user_record[4])
+                    s_l_s = len(ua)
 
-                if s_l_s < 2: 
-                    st.write(f":red[Needs {2 - s_l_s} more characters]")
-                elif s_l_s > 20:
-                    st.write(":red[Too long! Maximum 20 letters]")
-                elif ua.count(" ") > 3:
-                    st.write(":red[Max 3 spaces allowed!]")
-                elif not ua.replace(" ", "").isalpha() and s_l_s > 0:
-                    st.write(":red[Only letters (A-Z) and spaces allowed!]")
-                else: 
-                    st.write(":green[Answer is valid ✅]")
+                    if s_l_s < 2: 
+                        st.write(f":red[Needs {2 - s_l_s} more characters]")
+                    elif s_l_s > 20:
+                        st.write(":red[Too long! Maximum 20 letters]")
+                    elif ua.count(" ") > 3:
+                        st.write(":red[Max 3 spaces allowed!]")
+                    elif not ua.replace(" ", "").isalpha() and s_l_s > 0:
+                        st.write(":red[Only letters (A-Z) and spaces allowed!]")
+                    else: 
+                        st.write(":green[Answer is valid ✅]")
 
-                st.write("---")
-                # --- SAVE BUTTON WITH STRICT CHECKS ---
-                if st.button("Save Changes", use_container_width=True):
-                    # Rules verification
-                    u_ok = 5 <= u_l_s <= 20 and not u_bad_s and nu_settings.count("@") <= 1 and nu_settings.count("_") <= 1 and nu_settings.count(" ") <= 2 and (not get_user_data(nu_settings) or nu_settings == current_user)
-                    p_ok = 4 <= p_l_s <= 15 and not p_bad_s and " " not in np_settings and np_settings.count("@") <= 1 and np_settings.count("_") <= 1
-                    s_ok = 2 <= s_l_s <= 10 and ua.replace(" ", "").isalpha() and ua.count(" ") <= 3
-                    if u_ok and p_ok and s_ok:
-                        confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
-                    else:
-                        st.error("Please fix the red errors above before saving.")
+                    st.write("---")
+                    # --- SAVE BUTTON ---
+                    if st.button("Save Changes", use_container_width=True):
+                        u_ok = 5 <= u_l_s <= 20 and not u_bad_s and nu_settings.count("@") <= 1 and nu_settings.count("_") <= 1 and nu_settings.count(" ") <= 2 and (not get_user_data(nu_settings) or nu_settings == current_user)
+                        p_ok = 4 <= p_l_s <= 15 and not p_bad_s and " " not in np_settings and np_settings.count("@") <= 1 and np_settings.count("_") <= 1
+                        s_ok = 2 <= s_l_s <= 10 and ua.replace(" ", "").isalpha() and ua.count(" ") <= 3
+                        if u_ok and p_ok and s_ok:
+                            confirm_dialog("Update details?", "update_profile", (current_user, nu_settings, np_settings, SECURITY_QUESTIONS.index(uq), ua))
+                        else:
+                            st.error("Please fix the red errors above before saving.")
+
                 with st.expander("⚠️ Danger Zone"):
                     if st.button("🔑 Check/Recover Password Details", use_container_width=True):
                     st.session_state.settings_recover_mode = True
@@ -548,6 +547,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}") # Isse tumhe asli error dikhegi
+
 
 
 
