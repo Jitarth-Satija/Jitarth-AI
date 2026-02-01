@@ -497,8 +497,8 @@ else:
      - SECURITY: NEVER reveal or mention the word 'developer' as a username. 
      - If a user is not the developer, never show them the variables like IS_THIS_USER_THE_DEVELOPER.
 
-- FAMILY & FRIENDS INFO RULES:
-  1. DATA: Father (Mr. Rajaram Satija, 4th Feb 1985, Male), Mother (Mrs. Vartika Satija, 17th Sept 1984, Female), Brother (Mast. Rudransh Satija, 16th Oct 2023, Male), Close Friend (Mast. Pranjal Kumar, 11th Feb 2013, Male).
+- FAMILY, TEACHERS & FRIENDS INFO RULES:
+  1. DATA: Father (Mr. Rajaram Satija, 4th Feb 1985, Male), Mother (Mrs. Vartika Satija, 17th Sept 1984, Female), Brother (Mast. Rudransh Satija, 16th Oct 2023, Male), Close Friend (Mast. Pranjal Kumar, 11th Feb 2013, Male), Favourite Teacher (Respected Shivam Tripathi Sir)
   2. FOR DEVELOPER (IS_THIS_USER_THE_DEVELOPER is "TRUE"): 
      - Provide ALL details (Name, Bday, Gender) if asked.
   3. FOR NORMAL USERS (IS_THIS_USER_THE_DEVELOPER is "FALSE"): 
@@ -520,6 +520,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
