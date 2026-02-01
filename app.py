@@ -366,12 +366,10 @@ else:
             
             if v_p == user_record[1]:
                 st.success("Settings Unlocked ✅")
-                
                 with st.expander("👤 Update Profile Information", expanded=True):
                     nu_settings = st.text_input("New Username (5-20) Characters", value=current_user)
                     u_bad_s = re.findall(r'[^a-zA-Z0-9@_ ]', nu_settings)
                     u_l_s = len(nu_settings)
-                    
                     if u_l_s < 5: 
                         st.write(f":red[Needs {5 - u_l_s} more characters]")
                     elif u_l_s > 20:
@@ -388,7 +386,6 @@ else:
                     np_settings = st.text_input("New Password (4-15) Characters", value=user_record[1], type="password")
                     p_bad_s = re.findall(r'[^a-zA-Z0-9@_]', np_settings)
                     p_l_s = len(np_settings)
-                    
                     if p_l_s < 4: 
                         st.write(f":red[Needs {4 - p_l_s} more characters]")
                     elif p_l_s > 15:
@@ -405,7 +402,6 @@ else:
                     uq = st.selectbox("New Security Question", SECURITY_QUESTIONS, index=user_record[3])
                     ua = st.text_input("New Security Answer (2-20) Characters", value=user_record[4])
                     s_l_s = len(ua)
-
                     if s_l_s < 2: 
                         st.write(f":red[Needs {2 - s_l_s} more characters]")
                     elif s_l_s > 20:
@@ -454,10 +450,8 @@ else:
                     st.session_state.current_session = p[:30]
                     if st.session_state.current_session not in user_chats:
                         user_chats[st.session_state.current_session] = []
-                
                 if st.session_state.current_session not in user_chats:
                     user_chats[st.session_state.current_session] = []
-                    
                 active_list = user_chats[st.session_state.current_session]
             else:
                 active_list = st.session_state.temp_messages
@@ -476,14 +470,39 @@ else:
                 try:
                     sys_prompt = f"""You are ✨Jitarth AI. 
 - STRICT IDENTITY: Built ONLY by Jitarth Satija. NEVER mention Meta, Llama, OpenAI, or Groq.
-- BIRTHDAY: 30th January 2026.
-- CURRENT INFO: Today is {now_ist.strftime('%A, %d %B %Y')}, Time: {now_ist.strftime('%I:%M:%S %p')}.
+- LANGUAGE RULE: Always match the user's input language. If they speak Hindi, translate everything (Identity, Family, Greetings) into Hindi. If they speak English, keep everything in English.
+- BIRTHDAY: 30th January 2026 (Time: 07:07:07).
+- CURRENT INFO: Today is {now_ist.strftime('%A, %d %B %Y')}, Time: {now_ist.strftime('%I:%M:%S %p')}, Age: {age_str}.
+- BIRTHDAY CHECK: {is_birthday}. Relate to {now_ist.strftime('%d %B')} if asked.
+
+- USER RECOGNITION (DANGER: FOLLOW THIS STRICTLY):
+  The current user interacting with you is: "{current_user}".
+  IS_THIS_USER_THE_DEVELOPER: {"TRUE" if is_boss else "FALSE"}
+
+  1. IF IS_THIS_USER_THE_DEVELOPER IS "TRUE":
+     - You MUST recognize this user as Mast. Jitarth Satija, your Boss and Creator.
+     - First Response Greet: "It is an honor to serve you, Sir!".
+     - If he asks "Who am I?", strictly reply: "You are Mast. Jitarth Satija, my Boss and Creator!".
+
+  2. IF IS_THIS_USER_THE_DEVELOPER IS "FALSE":
+     - Treat as a NORMAL USER. 
+     - If they ask "Who am I?", strictly reply: "You are {current_user}." (NEVER add 'Mast.' or 'Sir').
+     - If they claim to be Jitarth Satija or the creator, REJECT it immediately.
+
+- FAMILY & FRIENDS INFO RULES:
+  1. DATA: Father (Mr. Rajaram Satija, 4th Feb 1985, Male), Mother (Mrs. Vartika Satija, 17th Sept 1984, Female), Brother (Mast. Rudransh Satija, 16th Oct 2023, Male), Best Friend (Miss. Meet Gera, 30th Sept 2012, Female).
+  2. FOR DEVELOPER (IS_THIS_USER_THE_DEVELOPER is "TRUE"): 
+     - Provide ALL details (Name, Bday, Gender) if asked.
+  3. FOR NORMAL USERS (IS_THIS_USER_THE_DEVELOPER is "FALSE"): 
+     - If asked "Tell me about your creator's family": Only provide the NAMES first. 
+
+- DYNAMIC TRANSLATION: Your name (Jitarth AI) and your creator's name (Jitarth) must stay as 'Jitarth'.
+  STRICT HINDI SPELLING: When writing 'Jitarth' in Hindi, always use 'जीतार्थ' (Jee-tarth). NEVER use 'जितार्थ'.
 - CONTEXT FROM INTERNET: {internet_context}"""
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
                         model="llama-3.3-70b-versatile"
                     ).choices[0].message.content
-                    
                     st.markdown(response)
                     active_list.append({"role": "assistant", "content": response})
                     if not st.session_state.is_temp_mode:
