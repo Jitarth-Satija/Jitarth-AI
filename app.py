@@ -9,7 +9,26 @@ import random
 import string
 import extra_streamlit_components as stx
 import os
+st.set_page_config(page_title="Jitarth AI", layout="wide", initial_sidebar_state="collapsed")
+st.markdown("""
+    <style>
+    /* Background and Text color */
+    [data-testid="stAppViewContainer"] {
+        background-color: #0E1117 !important;
+        color: #FFFFFF !important;
+    }
+    
+    /* Header background transparent */
+    [data-testid="stHeader"] {
+        background-color: rgba(0,0,0,0) !important;
+    }
 
+    /* Sidebar background (if any) */
+    [data-testid="stSidebar"] {
+        background-color: #1B1F27 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 # 1. Setup - API Key
 api_key = st.secrets["GROQ_API_KEY"]
 client = Groq(api_key=api_key)
@@ -556,6 +575,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
