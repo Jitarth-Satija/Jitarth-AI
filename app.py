@@ -215,6 +215,40 @@ st.markdown("""
         }
     }
     /* --- NAYA END --- */
+    /* --- FINAL ALIGNMENT FIX --- */
+    
+    /* 1. Sidebar ka Toggle Button (Arrow) */
+    .stApp header button {
+        top: 25px !important;
+        left: 10px !important;
+        position: fixed !important;
+    }
+
+    /* 2. Sidebar ke andar ka Logo/Content area */
+    [data-testid="stSidebarNav"] {
+        padding-top: 25px !important;
+    }
+
+    /* 3. Main Page ka Content (Hello Developer wala) */
+    .block-container {
+        padding-top: 28px !important; 
+        margin-top: 0px !important;
+    }
+
+    /* 4. Sidebar Content Wrapper fix */
+    [data-testid="stSidebarContent"] {
+        padding-top: 0px !important;
+    }
+
+    /* Mobile ke liye same alignment */
+    @media (max-width: 768px) {
+        .stApp header button {
+            top: 25px !important;
+        }
+        .block-container {
+            padding-top: 28px !important;
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -620,6 +654,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
