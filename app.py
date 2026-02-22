@@ -129,7 +129,6 @@ st.markdown("""
     }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
     /* Ye lines add karo purani header lines ke niche */
     header[data-testid="stHeader"] {
         display: none !important;
@@ -557,6 +556,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
