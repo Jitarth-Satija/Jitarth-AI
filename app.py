@@ -9,7 +9,7 @@ import random
 import string
 import extra_streamlit_components as stx
 import os
-st.set_page_config(page_title="Jitarth AI", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="collapsed")
 st.markdown("""
     <style>
     /* Background and Text color */
@@ -94,7 +94,6 @@ def generate_suggestions(base_u):
     return suggs
 
 # 4. Page Config & CSS
-st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
     <style>
@@ -608,6 +607,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
