@@ -183,6 +183,15 @@ st.markdown("""
         margin-top: -50px;
     }
     /* --- NAYA START: Isse content niche aayega --- */
+    /* Sidebar toggle button ko neeche shift karne ke liye */
+    button[kind="header"] {
+        top: 10vh !important; /* Isse wo button upar se neeche aa jayega */
+    }
+
+    /* Agar button upar wala kaam na kare toh ye try karo */
+    section[data-testid="stSidebarNav"] {
+        padding-top: 10vh !important;
+    }
     .block-container {
         padding-top: 15vh !important; 
         margin-top: 0px !important;
@@ -599,6 +608,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
