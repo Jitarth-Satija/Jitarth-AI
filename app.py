@@ -188,8 +188,9 @@ st.markdown("""
     }
 
     /* Agar button upar wala kaam na kare toh ye try karo */
-    section[data-testid="stSidebarNav"] {
-        padding-top: 10vh !important;
+    /* Sidebar ka Arrow aur Text dono niche lane ke liye */
+    [data-testid="stSidebarContent"] {
+        padding-top: 60px !important;
     }
     /* Sidebar toggle button (hamburger) ko niche lane ke liye */
     .stApp header button {
@@ -616,6 +617,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
