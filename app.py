@@ -160,10 +160,10 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     /* Ye lines add karo purani header lines ke niche */
+/* Header ko background-less kiya taaki icon dikhe */
     header[data-testid="stHeader"] {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0px !important;
+        background-color: rgba(0,0,0,0) !important;
+        color: white !important;
     }
     
     /* Extra Gap Fix */
@@ -607,6 +607,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
