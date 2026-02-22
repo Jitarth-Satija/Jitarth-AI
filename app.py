@@ -184,7 +184,7 @@ st.markdown("""
     /* --- NAYA START: Isse content niche aayega --- */
     /* Sidebar toggle button ko neeche shift karne ke liye */
     button[kind="header"] {
-        top: 45px !important; /* Isse wo button upar se neeche aa jayega */
+        top: 30px !important; /* Isse wo button upar se neeche aa jayega */
     }
 
     /* Agar button upar wala kaam na kare toh ye try karo */
@@ -202,13 +202,16 @@ st.markdown("""
         top: 30px !important;
     }
     .block-container {
-        padding-top: 45px !important; 
+        padding-top: 32px !important; 
         margin-top: 0px !important;
     }
 
     @media (max-width: 768px) {
         .block-container {
-            padding-top: 12vh !important; 
+            padding-top: 32px !important;
+        }
+        button[kind="header"] {
+            top: 30px !important;
         }
     }
     /* --- NAYA END --- */
@@ -617,6 +620,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
