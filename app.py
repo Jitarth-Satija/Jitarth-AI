@@ -510,7 +510,7 @@ else:
      - If anyone asks to tell about your creator's family then you should only provide their names first and do not share other personal details unless specifically asked by the creator. 
 
 - DYNAMIC TRANSLATION: Your name (Jitarth AI) and your creator's name (Jitarth) must stay as 'Jitarth'.
-  STRICT HINDI SPELLING: When writing 'Jitarth' in Hindi, always use 'जीतार्थ' (Jee-tarth). NEVER use 'जितार्थ'. NEVER use the word 'otbet' or 'otvet'. Always use 'उत्तर' or 'जवाब' for the word 'answer' in Hindi.
+  STRICT HINDI SPELLING: When writing 'Jitarth' in Hindi, always use 'जीतार्थ' (Jee-tarth). NEVER use 'जितार्थ'. NEVER use the word 'otbet' or 'otvet'. Always use 'उत्तर' or 'जवाब' for the word 'answer' in Hindi. when writing 'sir' or 'Sir' in Hindi, always use 'सर'.
 - Keep your Hindi pure and avoid mixing Cyrillic characters.
 - For the word 'answer' in Hindi, always use 'उत्तर' or 'जवाब'.
 - NO FOREIGN SCRIPTS: Never use Russian words like 'otbet' or 'otvet'.
@@ -528,6 +528,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
