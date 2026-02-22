@@ -63,7 +63,7 @@ def generate_suggestions(base_u):
     return suggs
 
 # 4. Page Config & CSS
-st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="centered", initial_sidebar_state="collapsed")
 
 st.markdown("""
     <style>
@@ -532,6 +532,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
