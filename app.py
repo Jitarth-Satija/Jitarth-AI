@@ -27,6 +27,13 @@ st.markdown("""
     [data-testid="stSidebar"] {
         background-color: #1B1F27 !important;
     }
+    .main .block-container { padding-top: 2rem; }
+    
+    img { user-select: none; -webkit-user-drag: none; }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 1.8rem !important; }
+    }
     </style>
     """, unsafe_allow_html=True)
 # 1. Setup - API Key
@@ -575,6 +582,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
