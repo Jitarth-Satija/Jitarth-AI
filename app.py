@@ -9,7 +9,7 @@ import random
 import string
 import extra_streamlit_components as stx
 import os
-st.set_page_config(page_title="Jitarth AI", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="collapsed")
 st.markdown("""
     <style>
     /* Background and Text color */
@@ -95,7 +95,6 @@ def generate_suggestions(base_u):
     return suggs
 
 # 4. Page Config & CSS
-st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
     <style>
@@ -162,10 +161,10 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     /* Ye lines add karo purani header lines ke niche */
+    /* Header ko background-less kiya taaki icon dikhe */
     header[data-testid="stHeader"] {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0px !important;
+        background-color: rgba(0,0,0,0) !important;
+        color: white !important;
     }
     
     /* Extra Gap Fix */
@@ -184,18 +183,23 @@ st.markdown("""
         margin-top: -50px;
     }
     /* Niche shift karne ke liye naya rule add kiya */
+    /* Sidebar toggle button (hamburger) ko niche lane ke liye */
+    .stApp header button {
+        top: 35px !important; 
+        left: 10px !important;
+    }
     .block-container {
         padding-top: 150px !important; 
         margin-top: 0px !important;
     }
     /* Sidebar toggle button ko neeche shift karne ke liye */
     button[kind="header"] {
-        top: 10vh !important; /* Isse wo button upar se neeche aa jayega */
+        top: 108px !important; /* Isse wo button upar se neeche aa jayega */
     }
 
     /* Agar button upar wala kaam na kare toh ye try karo */
     section[data-testid="stSidebarNav"] {
-        padding-top: 10vh !important;
+        padding-top: 108px !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -602,6 +606,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
