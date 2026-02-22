@@ -127,6 +127,10 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    .stDeployButton {display:none !important;}
+    [data-testid="stStatusWidget"] {display:none !important;}
+    [data-testid="stHeader"] {background: rgba(0,0,0,0) !important; color: rgba(0,0,0,0) !important;}
+    footer {display: none !important;}
     </style>
     """, unsafe_allow_html=True)
 
@@ -532,6 +536,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
