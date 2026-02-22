@@ -196,6 +196,10 @@ st.markdown("""
         top: 35px !important; 
         left: 10px !important;
     }
+    /* Ye wala pakka icon ko niche dhakelega */
+    header[data-testid="stHeader"] {
+        top: 30px !important;
+    }
     .block-container {
         padding-top: 15vh !important; 
         margin-top: 0px !important;
@@ -612,6 +616,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
