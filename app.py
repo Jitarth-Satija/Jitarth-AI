@@ -63,7 +63,7 @@ def generate_suggestions(base_u):
     return suggs
 
 # 4. Page Config & CSS
-st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
     <style>
@@ -130,8 +130,22 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    [data-testid="stHeader"] {
+    /* Ye lines add karo purani header lines ke niche */
+    header[data-testid="stHeader"] {
         display: none !important;
+        visibility: hidden !important;
+        height: 0px !important;
+    }
+    
+    /* Extra Gap Fix */
+    .block-container {
+        padding-top: 0rem !important;
+        margin-top: -60px !important; /* Isse content upar shift ho jayega */
+    }
+    
+    /* Background Color Fix for both Top and Bottom */
+    .stApp { 
+        background-color: #131314 !important; 
     }
 
     .block-container {
@@ -543,6 +557,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
