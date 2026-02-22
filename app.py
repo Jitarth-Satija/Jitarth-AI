@@ -191,6 +191,11 @@ st.markdown("""
     section[data-testid="stSidebarNav"] {
         padding-top: 10vh !important;
     }
+    /* Sidebar toggle button (hamburger) ko niche lane ke liye */
+    .stApp header button {
+        top: 35px !important; 
+        left: 10px !important;
+    }
     .block-container {
         padding-top: 15vh !important; 
         margin-top: 0px !important;
@@ -607,6 +612,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
