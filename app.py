@@ -182,6 +182,18 @@ st.markdown("""
         padding-top: 0rem !important;
         margin-top: -50px;
     }
+    /* --- NAYA START: Isse content niche aayega --- */
+    .block-container {
+        padding-top: 15vh !important; 
+        margin-top: 0px !important;
+    }
+
+    @media (max-width: 768px) {
+        .block-container {
+            padding-top: 12vh !important; 
+        }
+    }
+    /* --- NAYA END --- */
     </style>
     """, unsafe_allow_html=True)
 
@@ -587,6 +599,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
