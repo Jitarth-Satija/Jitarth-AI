@@ -67,7 +67,10 @@ st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", init
 
 st.markdown("""
     <style>
-    .stApp { background-color: #131314; color: #e3e3e3; }
+    .stApp { 
+        background-color: #131314 !important; /* Ye background ko ek jaisa kar dega */
+        color: #e3e3e3; 
+    }
     [data-testid="stSidebar"] { background-color: #1e1f20 !important; border-right: 1px solid #3c4043; }
     
     .gemini-logo { 
@@ -127,6 +130,14 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    [data-testid="stHeader"] {
+        display: none !important;
+    }
+
+    .block-container {
+        padding-top: 0rem !important;
+        margin-top: -50px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -532,6 +543,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
