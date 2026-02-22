@@ -63,7 +63,7 @@ def generate_suggestions(base_u):
     return suggs
 
 # 4. Page Config & CSS
-st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="centered", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown("""
     <style>
@@ -124,16 +124,6 @@ st.markdown("""
         color: #4e7cfe;
         font-family: 'monospace';
     }
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stDeployButton {display:none !important;}
-    [data-testid="stStatusWidget"] {display:none !important;}
-    [data-testid="stHeader"] {display:none !important;}
-    /* Pura header aur footer block hi uda diya */
-    div[data-testid="stToolbar"] {visibility: hidden;}
-    div.stDeployButton {display:none !important;}
-    footer {display: none !important;}
     </style>
     """, unsafe_allow_html=True)
 
@@ -539,13 +529,6 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
-
-
-
-
-
-
-
 
 
 
