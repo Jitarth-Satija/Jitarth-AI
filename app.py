@@ -29,7 +29,12 @@ st.markdown("""
     }
     .main .block-container { padding-top: 2rem; }
     
-    img { user-select: none; -webkit-user-drag: none; }
+    /* Isse blue highlight (patakhe) band honge */
+    img { 
+        user-select: none; 
+        -webkit-user-drag: none; 
+        -webkit-tap-highlight-color: transparent; 
+    }
 
     @media (max-width: 768px) {
         h1 { font-size: 1.8rem !important; }
@@ -582,6 +587,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
