@@ -188,6 +188,15 @@ st.markdown("""
         padding-top: 150px !important; 
         margin-top: 0px !important;
     }
+    /* Sidebar toggle button ko neeche shift karne ke liye */
+    button[kind="header"] {
+        top: 10vh !important; /* Isse wo button upar se neeche aa jayega */
+    }
+
+    /* Agar button upar wala kaam na kare toh ye try karo */
+    section[data-testid="stSidebarNav"] {
+        padding-top: 10vh !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -593,6 +602,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
