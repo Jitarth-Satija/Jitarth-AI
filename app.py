@@ -184,7 +184,7 @@ st.markdown("""
     /* --- NAYA START: Isse content niche aayega --- */
     /* Sidebar toggle button ko neeche shift karne ke liye */
     button[kind="header"] {
-        top: 10vh !important; /* Isse wo button upar se neeche aa jayega */
+        top: 45px !important; /* Isse wo button upar se neeche aa jayega */
     }
 
     /* Agar button upar wala kaam na kare toh ye try karo */
@@ -202,7 +202,7 @@ st.markdown("""
         top: 30px !important;
     }
     .block-container {
-        padding-top: 15vh !important; 
+        padding-top: 45px !important; 
         margin-top: 0px !important;
     }
 
