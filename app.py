@@ -9,8 +9,7 @@ import random
 import string
 import extra_streamlit_components as stx
 import os
-st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="collapsed", menu_items=None)
-st.markdown('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, interactive-widget=resizes-content">', unsafe_allow_html=True)
+st.set_page_config(page_title="Jitarth AI", page_icon="✨", layout="wide", initial_sidebar_state="collapsed")
 st.markdown("""
     <style>
     /* Background and Text color */
@@ -610,6 +609,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
