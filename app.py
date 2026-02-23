@@ -519,7 +519,7 @@ else:
             active_list = st.session_state.get("temp_messages", [])
         else:
             if not st.session_state.get("current_session"):
-                st.markdown(f"<h2 style='text-align:center; margin-top:100px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
+                st.markdown(f"<h2 style='text-align:center; margin-top:10px;'>Hello, {current_user}</h2>", unsafe_allow_html=True)
                 active_list = []
             else: active_list = user_chats.get(st.session_state.current_session, [])
 
@@ -609,6 +609,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
