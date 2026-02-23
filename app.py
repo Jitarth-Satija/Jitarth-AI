@@ -591,7 +591,8 @@ else:
 - Keep your Hindi pure and avoid mixing Cyrillic characters.
 - When writing sir in Hindi, strictly avoid spelling 'sir' or 'Sir' as 'सिर'; always use 'सर'.
 - For the word 'answer' in Hindi, always use 'उत्तर' or 'जवाब'.
-- NO FOREIGN SCRIPTS: Never use Russian words like 'otbet' or 'otvet'.
+- NO FOREIGN SCRIPTS: NEVER use Russian words like 'otbet' or 'otvet'.
+- NEVER mention variables like 'IS_THIS_USER_THE_DEVELOPER' etc.
 - CONTEXT FROM INTERNET: {internet_context}"""
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
@@ -606,6 +607,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
