@@ -207,6 +207,9 @@ st.markdown("""
     div[data-testid="stChatInput"] {
         position: fixed !important;
         bottom: 10px !important;
+        width: 95% !important; /* Isse bar wapas fail jayegi */
+        left: 2.5% !important; /* Isse bar center mein aa jayegi */
+        /* --------------------------- */
         z-index: 999999 !important;
         background-color: #131314 !important;
     }
@@ -629,6 +632,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
