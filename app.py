@@ -201,7 +201,27 @@ st.markdown("""
     section[data-testid="stSidebarNav"] {
         padding-top: 108px !important;
     }
-    
+/* Mobile Keyboard Jump Fix */
+@media screen and (max-width: 768px) {
+    /* Pure chat input container ko target karo */
+    div[data-testid="stChatInput"] {
+        position: fixed !important;
+        bottom: 10px !important;
+        z-index: 999999 !important;
+        background-color: #131314 !important;
+    }
+
+    /* Jab keyboard khule, toh bar ko upar shift karne ke liye */
+    div[data-testid="stChatInput"]:focus-within {
+        bottom: 40% !important; /* Ye bar ko keyboard ke upar le aayega */
+        transition: bottom 0.3s ease-in-out;
+    }
+
+    /* Taaki piche ka content scrollable rahe aur chhup na jaye */
+    .main .block-container {
+        padding-bottom: 450px !important;
+    }
+}    
     
     </style>
     """, unsafe_allow_html=True)
@@ -609,6 +629,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
