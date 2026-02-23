@@ -201,21 +201,7 @@ st.markdown("""
     section[data-testid="stSidebarNav"] {
         padding-top: 108px !important;
     }
-    @media screen and (max-width: 768px) {
-    /* Pure bottom chat input container ko target karo */
-    div[data-testid="stChatInput"] {
-        width: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 10px !important;
-    }
     
-    /* Isse width fix rahegi aur bar chhoti nahi hogi */
-    .stChatInputContainer {
-        width: 90% !important; 
-        margin: 0 auto !important;
-    }
-}
     
     </style>
     """, unsafe_allow_html=True)
@@ -623,6 +609,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
