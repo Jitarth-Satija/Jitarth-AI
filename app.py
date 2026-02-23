@@ -526,7 +526,7 @@ else:
         for m in active_list:
             with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"): st.markdown(m["content"])
 
-        if p := st.chat_input("Ask Jitarth AI..."):
+        if p := st.chat_input("Ask ✨Jitarth AI..."):
             if not st.session_state.is_temp_mode:
                 if not st.session_state.get("current_session"):
                     st.session_state.current_session = p[:30]
@@ -609,6 +609,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
