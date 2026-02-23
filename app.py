@@ -201,16 +201,7 @@ st.markdown("""
     section[data-testid="stSidebarNav"] {
         padding-top: 108px !important;
     }
-    @media screen and (max-width: 768px) {
-    [data-testid="stChatInput"] {
-        bottom: 35px !important;
-        position: fixed !important;
-        z-index: 999999;
-    }
-    .stChatInputContainer {
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-}
+    
     </style>
     """, unsafe_allow_html=True)
 
@@ -617,6 +608,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
