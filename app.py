@@ -206,7 +206,7 @@ st.markdown("""
     /* Pure chat input container ko target karo */
     div[data-testid="stChatInput"] {
         position: fixed !important;
-        bottom: 10px !important;
+        bottom: 25px !important;
         width: 95% !important; /* Isse bar wapas fail jayegi */
         left: 2.5% !important; /* Isse bar center mein aa jayegi */
         /* --------------------------- */
@@ -632,6 +632,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
