@@ -201,23 +201,7 @@ st.markdown("""
     section[data-testid="stSidebarNav"] {
         padding-top: 108px !important;
     }
-    @media screen and (max-width: 768px) {
-    /* Isse app ki height keyboard ke hisaab se adjust hogi */
-    .stApp {
-        height: 100dvh !important;
-    }
-
-    /* Chat input ka container jo automatically upar shift hoga */
-    div[data-testid="stChatInput"] {
-        bottom: env(keyboard-inset-height, 0px) !important;
-        margin-bottom: 10px !important;
-    }
-
-    /* Main content area mein extra space taaki last message keyboard ke niche na dabe */
-    .main .block-container {
-        padding-bottom: 100px !important;
-    }
-}
+    
     
     </style>
     """, unsafe_allow_html=True)
@@ -625,6 +609,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
