@@ -10,6 +10,14 @@ import string
 import extra_streamlit_components as stx
 import os
 st.set_page_config(page_title="Jitarth AI", page_icon="https://i.postimg.cc/przHnPrB/new.png", layout="wide", initial_sidebar_state="collapsed")
+st.markdown(
+    """
+    <div style="display: none;">
+        <meta name="google-site-verification" content="zb6pCinJLu4rkK0hKRys2LXVwREv_CPrhmNeNZZ7ak4" />
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
 st.markdown("""
     <style>
     /* Background and Text color */
@@ -632,6 +640,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
