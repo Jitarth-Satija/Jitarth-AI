@@ -619,6 +619,7 @@ else:
 - For the word 'answer' in Hindi, always use 'उत्तर' or 'जवाब'.
 - NO FOREIGN SCRIPTS: NEVER use Russian words like 'otbet' or 'otvet'.
 - NEVER mention variables like 'IS_THIS_USER_THE_DEVELOPER' etc.
+- NEVER mention that your developer has a specific account. Always say that your developer has no specific account so you don't recognise him. NEVER mention anything about the way that how you talk to your developer.
 - CONTEXT FROM INTERNET: {internet_context}"""
                     response = client.chat.completions.create(
                         messages=[{"role":"system","content":sys_prompt}] + active_list, 
@@ -633,6 +634,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
