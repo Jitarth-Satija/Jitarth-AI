@@ -74,7 +74,7 @@ def init_db():
 
 init_db()
 
-#SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favourite pet?"]
+SECURITY_QUESTIONS = ["What is your birth city?", "First school name?", "Favourite pet?"]
 
 # Input Validation Helpers
 def validate_username(u):
@@ -633,6 +633,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
