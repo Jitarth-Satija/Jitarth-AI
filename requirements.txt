@@ -2,4 +2,6 @@ streamlit==1.53.1
 groq==1.0.0
 extra-streamlit-components
 duckduckgo_search==8.1.1
+pymongo
+
 
