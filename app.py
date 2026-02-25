@@ -9,6 +9,7 @@ import random
 import string
 import extra_streamlit_components as stx
 import os
+import pymongo
 st.set_page_config(page_title="Jitarth AI", page_icon="https://i.postimg.cc/przHnPrB/new.png", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
@@ -634,6 +635,7 @@ else:
                     if e.__class__.__name__ == 'RerunException':
                         raise e
                     st.error(f"Error: {e}")
+
 
 
 
