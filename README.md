@@ -17,5 +17,5 @@
 
 ---
 *Created with ❤️ by **Jitarth Satija***
-You can access the AI by going to our website, i.e.  Jitarth AI <a href="jitarth-ai.streamlit.app"><img src="https://i.postimg.cc/przHnPrB/new.png" width="25" height="25" style="vertical-align:middle; border-radius:50%;"></a> Click here to open Jitarth AI! , or by downloading our app through an APK file
+You can access the AI by going to our website, i.e. Jitarth AI. <a href="jitarth-ai.streamlit.app"><img src="https://i.postimg.cc/przHnPrB/new.png" width="25" height="25" style="vertical-align:middle; border-radius:50%;"></a> Click on our icon to access Jitarth AI, or you can access by downloading our app through an APK file
 
