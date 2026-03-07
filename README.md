@@ -20,5 +20,5 @@
 
 To access Jitarth AI's website, simply click on our icon **→** <a href="https://jitarth-ai.streamlit.app"><img src="https://i.postimg.cc/przHnPrB/new.png" width="25" height="25" style="vertical-align:middle; border-radius:50%;"></a>
 
-To download the APK file, simply click on our icon **→** Jitarth AI <a href="https://github.com/Jitarth-Satija/Jitarth-AI/releases/download/1.0/Jitarth_AI.apk"><img src="https://i.postimg.cc/przHnPrB/new.png" width="25" height="25" style="vertical-align:middle; border-radius:50%;"></a> Click here to download APK!
+To download the APK file, simply click on our icon **→** Jitarth AI <a href="https://github.com/Jitarth-Satija/Jitarth-AI/releases/download/1.0/Jitarth_AI.apk"><img src="https://i.postimg.cc/przHnPrB/new.png" width="25" height="25" style="vertical-align:middle; border-radius:50%;"></a>
 
