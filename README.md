@@ -1,6 +1,6 @@
 <meta name="google-site-verification" content="Zs5VNAs38ew8ufFr2LfHJQLV9MMW59yM4BowEWe_gyQ" />
 
-#### ✨ Jitarth AI
+# ✨ Jitarth AI
 
 **Jitarth AI** is a powerful and personalized AI assistant, exclusively invented and developed by **Jitarth Satija**. This application is designed to provide a smart, secure, and real-time conversational experience for 2026.
 
