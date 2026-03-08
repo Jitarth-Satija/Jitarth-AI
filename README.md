@@ -26,5 +26,6 @@ To download the APK of Jitarth AI, simply click on our icon **→** <a href="htt
 
 To download the EXE of Jitarth AI, simply click on our icon **→** <a href="https://github.com/Jitarth-Satija/Jitarth-AI/releases/download/1.0/Jitarth_AI.zip"><img src="https://i.postimg.cc/przHnPrB/new.png" width="25" height="25" style="vertical-align:middle; border-radius:50%;"></a>
 
+To connect Jitarth Satija, simply click on our icon **→** <a href="https://github.com/Jitarth-Satija/Jitarth-AI/blob/main/Connnect.md"><img src="https://i.postimg.cc/przHnPrB/new.png" width="25" height="25" style="vertical-align:middle; border-radius:50%;"></a>
 
 
