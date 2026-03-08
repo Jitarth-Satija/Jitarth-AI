@@ -5,8 +5,8 @@
 ### Social Media
 | Platform | Link |
 | :--- | :--- |
-| **Instagram** | [Follow on Instagram](https://instagram.com/YOUR_USERNAME) |
-| **YouTube** | [Subscribe on YouTube](https://youtube.com/@YOUR_CHANNEL) |
-| **Gmail** | [Send an Email](mailto:YOUR_EMAIL@gmail.com) |
+| **Instagram** | [Follow on Instagram](https://instagram.com/jitarths_2013_js) |
+| **YouTube** | [Subscribe on YouTube](https://youtube.com/@jitarth_ai?si=CTUdVlE8cIHF_B-y) |
+| **Gmail** | [Send an Email](mailto:jitarth.ai2013@gmail.com) |
 
 ---
