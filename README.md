@@ -1,4 +1,4 @@
-<meta name="google-site-verification" content="Zs5VNAs38ew8ufFr2LfHJQLV9MMW59yM4BowEWe_gyQ" />
+<meta name="google-site-verification" content="3BMHWj6UMyCPScuW90F3LiZ7pk8nB6ytcQ93T7G1Xsw" />
 
 # ✨ Jitarth AI - The Smartest AI Assistant Created by Jitarth Satija
 
