@@ -12,6 +12,6 @@
 | **Itch** | [Visit our site](https://jitarth-satija.itch.io/jitarth-ai)
 | **MediaFire** | [View our page](https://www.mediafire.com/file/7vrmmn05ha6k05q/Jitarth_AI_%25281%2529.apk/file)
 | **Diawi** | [View our page](https://i.diawi.com/6nKWrc)
-| SOURCE**FORGE** | [Visit us](https://sourceforge.net/projects/jitarth-ai/)
+| SOURCE**FORGE** | [Visit our repository](https://sourceforge.net/projects/jitarth-ai/)
 
 ---
