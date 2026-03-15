@@ -14,5 +14,6 @@
 | **Diawi** | [View our page](https://i.diawi.com/6nKWrc)
 | SOURCE**FORGE** | [Visit our repository](https://sourceforge.net/projects/jitarth-ai/)
 | **Internet Archive** | [Visit our page](https://archive.org/details/jitarth-ai)
+| **Pinterest** | [View our page](https://in.pinterest.com/jitarthsatija/)
 
 ---
