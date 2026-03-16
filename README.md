@@ -1,6 +1,6 @@
 <meta name="google-site-verification" content="3BMHWj6UMyCPScuW90F3LiZ7pk8nB6ytcQ93T7G1Xsw" />
 
-# ✨ Jitarth AI - The Smartest AI Assistant Created by Jitarth Satija
+# ✨ Jitarth AI - The Smartest AI Assistant Created by Jitarth Satija, a 12-Year Old Boy.
 
 **Jitarth AI** is a powerful and personalized AI assistant, exclusively invented and developed by **Jitarth Satija**. This application is designed to provide a smart, secure, and real-time conversational experience for 2026.
 
