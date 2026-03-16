@@ -15,5 +15,7 @@
 | SOURCE**FORGE** | [Visit our repository](https://sourceforge.net/projects/jitarth-ai/)
 | **Internet Archive** | [Visit our page](https://archive.org/details/jitarth-ai)
 | **Pinterest** | [View our page](https://in.pinterest.com/jitarthsatija/)
+| **Hugging Face** | [View our dataset](https://huggingface.co/datasets/Jitarth-Satija/Jitarth-AI/blob/main/Connect.md)
+
 
 ---
