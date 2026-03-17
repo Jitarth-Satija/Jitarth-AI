@@ -17,6 +17,7 @@
 | **Pinterest** | [View our page](https://in.pinterest.com/jitarthsatija/)
 | **Hugging Face** | [View our dataset](https://huggingface.co/datasets/Jitarth-Satija/Jitarth-AI/blob/main/Connect.md)
 | **Product Hunt** | [Upvote us](https://www.producthunt.com/products/jitarth-ai)
+| **Whatsapp** | [Follow our channel](https://whatsapp.com/channel/0029VbDS1geJpe8omWnK7u2W)
 
 
 ---
