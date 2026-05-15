@@ -160,13 +160,13 @@ Every user session runs within an isolated environment. The application enforces
 
 To install Jitarth AI technically, execute the following commands in your terminal environment:
 
-## Step-1
+### Step-1
 ```bash
 #First, download the installer file.
 curl -L -o Jitarth_AI.s_Setup.exe "https://github.com/Jitarth-Satija/Jitarth-AI/releases/download/1.0/Jitarth_AI.s_Setup.exe"
 
 ```
-## Step-2
+### Step-2
 ```bash
 #2. Run the Installer
 #Launch the installation file directly from your current CMD directory:
