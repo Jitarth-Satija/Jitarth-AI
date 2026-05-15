@@ -47,7 +47,7 @@ Most consumer AI solutions lock users into rigid configurations, tracking data w
 ## 🔥 Brand New Features (2026 Upgrade)
 
 ### 🎨 Advanced AI Image Generation Suite
-The model now includes a fully integrated, state-of-the-art text-to-image and image-to-image generation pipeline. Users can bypass external tools and create complex visual assets right within the chat window.
+The model now includes a fully integrated, state-of-the-art text-to-image generation pipeline. Users can bypass external tools and create complex visual assets right within the chat window.
 * **Prompt Engineering Engine:** Built-in dynamic upscaling of user descriptions to generate highly detailed, cinematic visuals.
 * **Resolution & Aspect Ratio Tuning:** Complete UI controls for landscape ($16:9$), portrait ($9:16$), or standard square ($1:1$) configurations.
 * **Style Injectors:** Pre-configured mathematical style tensors for rendering digital art, ultra-realistic photography, 3D anime, cyberpunk styles, and vector designs.
