@@ -1,5 +1,6 @@
 
 <meta name="google-site-verification" content="3BMHWj6UMyCPScuW90F3LiZ7pk8nB6ytcQ93T7G1Xsw" />
+```
 
 # ✨ Jitarth AI - The Smartest AI Assistant
 
@@ -209,6 +210,5 @@ For direct collaborations, integration partnerships, or technical inquiries rega
 ---
 
 *Proudly engineered with passion, precision, and ❤️ by **Jitarth Satija** © 2026.*
-```
 
 
