@@ -135,6 +135,10 @@ Account recovery bypasses simple password-reset links, which are vulnerable to i
 ### 3. Session Isolation Protocol
 Every user session runs within an isolated environment. The application enforces strict boundaries between concurrent database queries, preventing data leaks or unauthorized cross-session access.
 
+### 4. Live Device Session Tracking (New)
+* **Active Session Logging:** Monitor exactly which devices, operating systems, and IP addresses are logged into your account in real-time.
+* **Security Audit Trail:** Easily track login history and instantly terminate unauthorized active sessions to maintain absolute account integrity.
+
 ---
 
 ## 💻 Installation & Deployment Blueprint
