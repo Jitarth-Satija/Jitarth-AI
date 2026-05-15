@@ -1,6 +1,3 @@
-नीचे एक professional **Terms & Conditions + Acceptable Use Policy + Safety Policy** दिया है जिसे तुम अपने GitHub repo में `TERMS_AND_CONDITIONS.md` या `TERMS.md` के नाम से डाल सकते हो। इसमें explicit content, illegal/crime content, hacking misuse, harassment, malware, spam आदि सब cover किया गया है।
-
----
 
 # Jitarth AI – Terms & Conditions
 
