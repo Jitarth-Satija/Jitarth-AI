@@ -3,7 +3,7 @@
 
 *Last Updated: May 2026*
 
-Welcome to [Jitarth AI](https://jitarth-ai.streamlit.app?utm_source=chatgpt.com).
+Welcome to [Jitarth AI](https://jitarth-ai.streamlit.app).
 By accessing or using this platform, you agree to comply with these Terms & Conditions. If you do not agree, please discontinue using the service immediately.
 
 ---
