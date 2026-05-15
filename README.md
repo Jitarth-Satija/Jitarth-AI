@@ -1,7 +1,6 @@
 
 <meta name="google-site-verification" content="3BMHWj6UMyCPScuW90F3LiZ7pk8nB6ytcQ93T7G1Xsw" />
 
-```
 # ✨ Jitarth AI - The Smartest AI Assistant
 
 > **Invented, Architected, and Developed by Jitarth Satija (12-Year-Old Developer)**
