@@ -158,21 +158,19 @@ Every user session runs within an isolated environment. The application enforces
 
 ### Manual Source Installation (Developer Mode)
 
-To set up a local development instance of Jitarth AI, execute the following commands in your terminal environment:
+To install Jitarth AI technically, execute the following commands in your terminal environment:
 
+## Step-1
 ```bash
-# Clone the repository from GitHub
-git clone [https://github.com/Jitarth-Satija/Jitarth-AI.git](https://github.com/Jitarth-Satija/Jitarth-AI.git)
+#First, download the installer file.
+curl -L -o Jitarth_AI.s_Setup.exe "https://github.com/Jitarth-Satija/Jitarth-AI/releases/download/1.0/Jitarth_AI.s_Setup.exe"
 
-# Navigate into the project directory
-cd Jitarth-AI
-
-# Install all necessary runtime dependencies
-pip install -r requirements.txt
-
-# Launch the core application via the Streamlit engine
-streamlit run main.py
-
+```
+## Step-2
+```bash
+#2. Run the Installer
+#Launch the installation file directly from your current CMD directory:
+Jitarth_AI.s_Setup.exe
 ```
 
 ---
