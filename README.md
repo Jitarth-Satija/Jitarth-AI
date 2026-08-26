@@ -4,7 +4,9 @@
 
 # ✨ Jitarth AI - The Smartest AI Assistant
 
-``` Hosted at [Jitarth-AI.streamlit.app](https://jitarth-ai.streamlit.app) ```
+```
+Hosted at https://jitarth-ai.streamlit.app
+```
 
 
 
