@@ -4,9 +4,8 @@
 
 # ✨ Jitarth AI - The Smartest AI Assistant
 
-```
-``` Hosted at [Jitarth-AI.streamlit.app](https://jitarth-ai.streamlit.app)
-```
+``` Hosted at [Jitarth-AI.streamlit.app](https://jitarth-ai.streamlit.app) ```
+
 
 
 > **Invented, Architected, and Developed by Jitarth Satija (12-Year-Old Developer)**
